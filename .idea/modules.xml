@@ -2,6 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$PROJECT_DIR$/Android12.iml" filepath="$PROJECT_DIR$/Android12.iml" />
       <module fileurl="file://$PROJECT_DIR$/MobileChessApp12.iml" filepath="$PROJECT_DIR$/MobileChessApp12.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
     </modules>
