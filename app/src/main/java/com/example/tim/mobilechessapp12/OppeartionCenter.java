@@ -15,13 +15,19 @@ import android.view.MenuItem;
 import android.util.Log;
 import android.widget.GridLayout;
 import android.widget.ImageButton;
+import android.content.res.Resources;
+
+import Chess.logic.chess.CurrentGame;
 
 public class OppeartionCenter extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
     public static String firstSelected = null;
     public static String secondSelected = null;
+    public static ImageButton firstSelectedTile;
+    public static ImageButton secondSelectedTile;
 
+    public static CurrentGame currentGame;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,6 +44,12 @@ public class OppeartionCenter extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+        try{
+            currentGame = new CurrentGame();
+        } catch(Exception e){
+            return;
+        }
 
         initializeBoard();
     }
@@ -91,19 +103,30 @@ public class OppeartionCenter extends AppCompatActivity
         return true;
     }
 
-    public void  initializeBoard(){
-        GridLayout currentTile = (GridLayout) findViewById(R.id.chessBoard);
+    public void initializeBoard(){
+        GridLayout board = (GridLayout) findViewById(R.id.chessBoard);
 
         //add an onClick to every square
-        for(int i = 0; i < currentTile.getChildCount(); i++){
-            ImageButton currentSquare = (ImageButton) currentTile.getChildAt(i);
+        for(int i = 0; i < board.getChildCount(); i++){
+            ImageButton currentSquare = (ImageButton) board.getChildAt(i);
             currentSquare.setOnClickListener(new View.OnClickListener()   {
                 public void onClick(View v) {
                     if (OppeartionCenter.firstSelected == null) {
+                        OppeartionCenter.firstSelectedTile = (ImageButton) v;
                         OppeartionCenter.firstSelected = getResources().getResourceEntryName(v.getId());
                     } else if (OppeartionCenter.firstSelected != null) {
+                        OppeartionCenter.secondSelectedTile = (ImageButton) v;
                         OppeartionCenter.secondSelected = getResources().getResourceEntryName(v.getId());
+
+                        makeMove();
+
+                        OppeartionCenter.firstSelectedTile = null;
+                        OppeartionCenter.secondSelectedTile = null;
+                        OppeartionCenter.firstSelected = null;
+                        OppeartionCenter.secondSelected = null;
                     } else if (firstSelected.equals(getResources().getResourceEntryName(v.getId()))) {
+                        OppeartionCenter.firstSelectedTile = null;
+                        OppeartionCenter.secondSelectedTile = null;
                         OppeartionCenter.firstSelected = null;
                         OppeartionCenter.secondSelected = null;
                     }
@@ -116,20 +139,25 @@ public class OppeartionCenter extends AppCompatActivity
                 case "a1":
                 case "h1":
                     currentSquare.setImageResource(R.drawable.white_rook);
+                    currentSquare.setTag(R.drawable.white_rook);
                     break;
                 case "b1":
                 case "g1":
                     currentSquare.setImageResource(R.drawable.white_knight);
+                    currentSquare.setTag(R.drawable.white_knight);
                     break;
                 case "c1":
                 case "f1":
                     currentSquare.setImageResource(R.drawable.white_bishop);
+                    currentSquare.setTag(R.drawable.white_bishop);
                     break;
                 case "d1":
                     currentSquare.setImageResource(R.drawable.white_queen);
+                    currentSquare.setTag(R.drawable.white_queen);
                     break;
                 case "e1":
                     currentSquare.setImageResource(R.drawable.white_king);
+                    currentSquare.setTag(R.drawable.white_king);
                     break;
                 case "a2":
                 case "b2":
@@ -140,6 +168,7 @@ public class OppeartionCenter extends AppCompatActivity
                 case "g2":
                 case "h2":
                     currentSquare.setImageResource(R.drawable.white_pawn);
+                    currentSquare.setTag(R.drawable.white_pawn);
                     break;
                 case "a7":
                 case "b7":
@@ -150,28 +179,49 @@ public class OppeartionCenter extends AppCompatActivity
                 case "g7":
                 case "h7":
                     currentSquare.setImageResource(R.drawable.black_pawn);
+                    currentSquare.setTag(R.drawable.black_pawn);
                     break;
                 case "a8":
                 case "h8":
                     currentSquare.setImageResource(R.drawable.black_rook);
+                    currentSquare.setTag(R.drawable.black_rook);
                     break;
                 case "b8":
                 case "g8":
                     currentSquare.setImageResource(R.drawable.black_knight);
+                    currentSquare.setTag(R.drawable.black_knight);
                     break;
                 case "c8":
                 case "f8":
                     currentSquare.setImageResource(R.drawable.black_bishop);
+                    currentSquare.setTag(R.drawable.black_bishop);
                     break;
                 case "d8":
                     currentSquare.setImageResource(R.drawable.black_queen);
+                    currentSquare.setTag(R.drawable.black_queen);
                     break;
                 case "e8":
                     currentSquare.setImageResource(R.drawable.black_king);
+                    currentSquare.setTag(R.drawable.black_king);
                     break;
                 default:
                     break;
             }
+        }
+    }
+
+
+    public static void makeMove(){
+        try{
+            if(currentGame.makeMove(firstSelected + " " + secondSelected)){
+                secondSelectedTile.setImageResource((Integer)firstSelectedTile.getTag());
+                secondSelectedTile.setTag(firstSelectedTile.getTag());
+
+                firstSelectedTile.setImageResource(android.R.color.transparent);
+                firstSelectedTile.setTag(android.R.color.transparent);
+            }
+        }catch(Exception e){
+            return;
         }
     }
 }

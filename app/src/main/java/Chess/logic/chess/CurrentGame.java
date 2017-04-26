@@ -14,7 +14,7 @@ import java.util.Date;
 
 public class CurrentGame implements Serializable{
 	private static final long serialVersionUID = -3739580358789280590L;
-	public static ArrayList<String> listMoves = new ArrayList<String>();
+	public ArrayList<String> listMoves = new ArrayList<String>();
 	
 	static String toFrom[] = new String[3];
 	public Board currentBoard;
@@ -30,12 +30,12 @@ public class CurrentGame implements Serializable{
 		System.out.println(currentBoard);
 	}
 	/**
-	 * @param board: the chess board
+	 * @param move: the chess board
 	 * Takes user input, parses, and calls the target piece's move function
 	 * Does this continuously until checkmate, draw, stalemate, or resign
 	 * @throws Exception if invalid file or rank
 	 */
-	public void makeMove(String move) throws Exception{
+	public boolean makeMove(String move) throws Exception{
 		//turn = true for white, false for black
 		if (currentBoard.whiteKing.checkmate() || currentBoard.blackKing.checkmate()) {
 			gameOver();
@@ -77,11 +77,11 @@ public class CurrentGame implements Serializable{
 				//checks from and to are equal
 				if (from.equals(to)) {
 					System.out.println("Illegal move, try again\n");
-					return;
+					return false;
 				}
 				if (from == null || to == null) {
 					System.out.println("Illegal move, try again\n");
-					return;
+					return false;
 				}
 
 				
@@ -92,7 +92,7 @@ public class CurrentGame implements Serializable{
 				piece = currentBoard.board[Position.rankToIndex(num)][letter].getPiece();
 				if (piece == null) {
 					System.out.println("Illegal move, try again\n");
-					return;
+					return false;
 				}
 				//if piece is null, go back to start of while loop
 				
@@ -100,13 +100,13 @@ public class CurrentGame implements Serializable{
 				if (currentBoard.turn == Color.White) {
 					if (piece.getColor() != Color.White) {
 						System.out.println("Illegal move, try again\n");
-						return;
+						return false;
 					}
 				}
 				else {
 					if (piece.getColor() != Color.Black) {
 						System.out.println("Illegal move, try again\n");
-						return;
+						return false;
 					}
 				}
 				
@@ -114,7 +114,7 @@ public class CurrentGame implements Serializable{
 	
 				if (!piece.move(currentBoard.board[Position.rankToIndex(pos.getRank())][Position.fileToIndex(pos.getFile())])) {
 					System.out.println("Illegal move, try again\n");
-					return;
+					return false;
 				}
 				System.out.println("\n" + currentBoard);
 				
@@ -133,7 +133,10 @@ public class CurrentGame implements Serializable{
 			}
 			catch (Exception e) {
 				System.out.println("Illegal move, try again2\n");
+				return false;
 			}
+
+			return true;
 	}
 	
 	private void gameOver() {
