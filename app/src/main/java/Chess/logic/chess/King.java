@@ -34,7 +34,7 @@ public class King extends Piece{
 	 * @return true if this piece can legally move
 	 */
 	@Override
-	public boolean move(Position finish){
+	public TypeOfMove move(Position finish){
 		// TODO Auto-generated method stub
 		try {
 			//castle allows the king to move only 2 squares in a file direction
@@ -44,7 +44,7 @@ public class King extends Piece{
 					return castle(finish);
 				}
 				else {
-					return false;
+					return TypeOfMove.INVALID;
 				}
 			}
 
@@ -58,7 +58,7 @@ public class King extends Piece{
 				rankdiff = true;
 			}
 			if (!((!filediff && rankdiff) || (filediff && !rankdiff) || (filediff && rankdiff))) {
-				return false;
+				return TypeOfMove.INVALID;
 			}
 			
 			Position cur = this.getPosition();
@@ -79,13 +79,13 @@ public class King extends Piece{
 			} else if(getPosition().getRank() > finish.getRank()){
 				cur = cur.getSouth();
 			} else{
-				return false;
+				return TypeOfMove.INVALID;
 			}
 			//does not apply for Knights
 			//if passing through a piece or landing on own piece
 			if(		cur.getPiece() != null 
 				 && (cur.getPiece().getColor() == this.getColor() || !cur.equals(finish))){
-				return false;
+				return TypeOfMove.INVALID;
 			}
 			
 			//Perform the move. If this leaves you king in check, undo the move and return false
@@ -94,7 +94,7 @@ public class King extends Piece{
 			board.move(start, finish);
 			if(!this.checkedBy().isEmpty()){
 				board.undoMove(start, finish, taken);
-				return false;
+				return TypeOfMove.INVALID;
 			}
 	
 		} catch (Exception e) {
@@ -102,7 +102,7 @@ public class King extends Piece{
 			e.printStackTrace();
 		}
 		hasMoved = true;
-		return true;
+		return TypeOfMove.VALID;
 	}
 	
 	/**
@@ -112,7 +112,7 @@ public class King extends Piece{
 	 * @throws Exception if invalid position
 	 * @return true if the move is valid and successful
 	 */
-	private boolean castle(Position move) throws Exception {
+	private TypeOfMove castle(Position move) throws Exception {
 		Rook rook = null;
 		String direction = null;
 		//initializes the correct rook depending on the position move relative to the king
@@ -122,7 +122,7 @@ public class King extends Piece{
 				rook = (Rook) move.getEast().getPiece();
 				direction = "east";
 			}
-			else return false;
+			else return TypeOfMove.INVALID;
 		}
 		else if (!this.hasMoved && Position.fileToIndex(this.getPosition().getFile()) - Position.fileToIndex(move.getFile()) > 0 &&
 				move.getWest().getWest().getPiece() != null){
@@ -131,15 +131,15 @@ public class King extends Piece{
 				rook = (Rook) move.getWest().getWest().getPiece();
 				direction = "west";
 			}
-			else return false;
+			else return TypeOfMove.INVALID;
 		}
 		else {
-			return false;
+			return TypeOfMove.INVALID;
 		}
 		
 		
 		if (rook.hasMoved) {
-			return false;
+			return TypeOfMove.INVALID;
 		}
 		
 		Position cur = this.getPosition();
@@ -149,11 +149,11 @@ public class King extends Piece{
 			} else if(getPosition().getFile() > rook.getPosition().getFile()){
 				cur = cur.getWest();
 			} else{
-				return false;
+				return TypeOfMove.INVALID;
 			}
 			
 			if(cur.getPiece() != null){
-				return false;
+				return TypeOfMove.INVALID;
 			}
 		}while(!cur.equals(move));
 		
@@ -168,7 +168,7 @@ public class King extends Piece{
 	 * Is only called if the castle request is a valid castle
 	 * @return false is king passes through a tile that puts the king in check, true if valid
 	 */
-	private boolean moveCastle(Position move, Rook rook, String direction) {
+	private TypeOfMove moveCastle(Position move, Rook rook, String direction) {
 		
 		//Perform the move. If this leaves you king in check, undo the move and return false
 		Position start = this.getPosition();
@@ -178,14 +178,14 @@ public class King extends Piece{
 				current = start.getWest();
 				while (current != rook.getPosition()) {
 					if (current.getPiece() != null) {
-						return false;
+						return TypeOfMove.INVALID;
 					}
 					current = current.getWest();
 				}
 				board.move(start, start.getWest());
 				if(!this.checkedBy().isEmpty()){
 					board.undoMove(start, start.getWest(),  null); //start.getWest().getPiece()
-					return false;
+					return TypeOfMove.INVALID;
 				}
 				start = this.getPosition();
 				board.move(start, start.getWest());
@@ -193,7 +193,7 @@ public class King extends Piece{
 					board.undoMove(start, start.getWest(),  null);
 					start = this.getPosition().getEast();
 					board.undoMove(start, start.getWest(),  null);
-					return false;
+					return TypeOfMove.INVALID;
 				}
 				start = this.getPosition();
 				board.move(rook.getPosition(), start.getEast());
@@ -203,21 +203,21 @@ public class King extends Piece{
 					board.undoMove(start, start.getWest(),  null);
 					start = this.getPosition().getEast();
 					board.undoMove(start, start.getWest(),  null);
-					return false;
+					return TypeOfMove.INVALID;
 				}	
 			}
 			else {
 				current = start.getEast();
 				while (current != rook.getPosition()) {
 					if (current.getPiece() != null) {
-						return false;
+						return TypeOfMove.INVALID;
 					}
 					current = current.getEast();
 				}
 				board.move(start, start.getEast());
 				if(!this.checkedBy().isEmpty()){
 					board.undoMove(start, start.getEast(), null); //start.getEast().getPiece()
-					return false;
+					return TypeOfMove.INVALID;
 				}	
 				start = this.getPosition();
 				board.move(start, start.getEast());
@@ -225,7 +225,7 @@ public class King extends Piece{
 					board.undoMove(start, start.getEast(),  null);
 					start = this.getPosition().getWest();
 					board.undoMove(start, start.getEast(),  null);
-					return false;
+					return TypeOfMove.INVALID;
 				}	
 				start = this.getPosition();
 				board.move(rook.getPosition(), start.getWest());
@@ -235,7 +235,7 @@ public class King extends Piece{
 					board.undoMove(start, start.getEast(),  null);
 					start = this.getPosition().getWest();
 					board.undoMove(start, start.getEast(),  null);
-					return false;
+					return TypeOfMove.INVALID;
 				}	
 			}
 		} catch (Exception e) {
@@ -243,8 +243,13 @@ public class King extends Piece{
 			e.printStackTrace();
 		}
 		rook.hasMoved = true;
-		return true;
-		
+		hasMoved = true;
+
+		if(direction.equals("west")){
+			return TypeOfMove.CASTLE_LEFT;
+		} else{
+			return TypeOfMove.CASTLE_RIGHT;
+		}
 	}
 
 	/**
@@ -321,7 +326,7 @@ public class King extends Piece{
 	 * @return true if attacker can be intercepted
 	 */
 	private boolean attackerCanBeBlocked(Piece attacker){
-		boolean blockerFound = false;
+		TypeOfMove blockerFound = TypeOfMove.INVALID;
 		
 		if(attacker.getClass() == Knight.class){
 			for(Piece piece : attacker.getPosition().getAttackers()){
@@ -336,7 +341,7 @@ public class King extends Piece{
 					e.printStackTrace();
 				}
 				
-				if(blockerFound){
+				if(blockerFound == TypeOfMove.VALID || blockerFound == TypeOfMove.EN_PASSANT || blockerFound == TypeOfMove.CASTLE_LEFT || blockerFound == TypeOfMove.CASTLE_RIGHT){
 					return true;
 				}
 			}
@@ -349,8 +354,8 @@ public class King extends Piece{
 					Position start = piece.getPosition();
 					
 					blockerFound = piece.move(finish);
-										
-					if(blockerFound){
+
+					if(blockerFound == TypeOfMove.VALID || blockerFound == TypeOfMove.EN_PASSANT || blockerFound == TypeOfMove.CASTLE_LEFT || blockerFound == TypeOfMove.CASTLE_RIGHT){
 						try {
 							board.undoMove(start, finish, taken);
 						} catch (Exception e) {

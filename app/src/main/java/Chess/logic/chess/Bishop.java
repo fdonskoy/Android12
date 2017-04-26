@@ -25,13 +25,13 @@ public class Bishop extends Piece{
 	 * @return true if move successful, false otherwise
 	 */
 	@Override
-	public boolean move(Position finish) {
+	public TypeOfMove move(Position finish) {
 		if (finish == null) {
-			return false;
+			return TypeOfMove.INVALID;
 		}
 		try {
-			if(Math.abs(Position.fileToIndex(this.getPosition().getFile()) - Position.fileToIndex(finish.getFile())) != Math.abs(Position.rankToIndex(this.getPosition().getRank()) - Position.rankToIndex(finish.getRank()))){				
-				return false;
+			if(Math.abs(Position.fileToIndex(this.getPosition().getFile()) - Position.fileToIndex(finish.getFile())) != Math.abs(Position.rankToIndex(this.getPosition().getRank()) - Position.rankToIndex(finish.getRank()))){
+				return TypeOfMove.INVALID;
 			}
 			
 			//Picking a direction. This should work for any piece, actually, as long as you don't mind moving in Manhattan distance instead of diagonals. Or just add more if statements
@@ -46,14 +46,14 @@ public class Bishop extends Piece{
 				} else if(cur.getFile() > finish.getFile() && cur.getRank() > finish.getRank()){
 					cur = cur.getSouthWest();
 				} else{
-					return false;
+					return TypeOfMove.INVALID;
 				}
 				
 				//does not apply for Knights
 				//if passing through a piece or landing on own piece
 				if(		cur.getPiece() != null 
 					 && (cur.getPiece().getColor() == this.getColor() || !cur.equals(finish))){
-					return false;
+					return TypeOfMove.INVALID;
 				}
 			}while(!cur.equals(finish));
 			
@@ -64,19 +64,19 @@ public class Bishop extends Piece{
 			board.move(start, finish);
 			if(!king.checkedBy().isEmpty()){
 				board.undoMove(start, finish, taken);
-				return false;
+				return TypeOfMove.INVALID;
 			}
 			if (testMove) {
 				board.undoMove(start, finish, taken);
-				return true;
+				return TypeOfMove.VALID;
 			}
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-			return false;
+			return TypeOfMove.INVALID;
 		}
 		
-		return true;
+		return TypeOfMove.VALID;
 	}
 	
 	/**
@@ -103,7 +103,7 @@ public class Bishop extends Piece{
 		
 		testMove = true;
 		
-		boolean possibleMove = move(northEast) || move(northWest) || move(southEast) || move(southWest);
+		boolean possibleMove = move(northEast) == TypeOfMove.VALID || move(northWest) == TypeOfMove.VALID || move(southEast)  == TypeOfMove.VALID || move(southWest) == TypeOfMove.VALID;
 		testMove = false;
 		return possibleMove;
 	}
