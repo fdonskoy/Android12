@@ -30,13 +30,13 @@ public class Rook extends Piece{
 	 * @return true if move successful, false otherwise
 	 */
 	@Override
-	public boolean move(Position finish) {
+	public TypeOfMove move(Position finish) {
 		if (finish == null) {
-			return false;
+			return TypeOfMove.INVALID;
 		}
 		if(			(this.getPosition().getFile() != finish.getFile() && this.getPosition().getRank() != finish.getRank()) 
 				|| 	(this.getPosition().getFile() == finish.getFile() && this.getPosition().getRank() == finish.getRank())){
-			return false;
+			return TypeOfMove.INVALID;
 		}
 	
 		//Picking a direction. This should work for any piece, actually, as long as you don't mind moving in Manhattan distance instead of diagonals. Or just add more if statements
@@ -51,14 +51,14 @@ public class Rook extends Piece{
 			} else if(getPosition().getRank() > finish.getRank()){
 				cur = cur.getSouth();
 			} else{
-				return false;
+				return TypeOfMove.INVALID;
 			}
 			
 			//does not apply for Knights
 			//if passing through a piece or landing on own piece
 			if(		cur.getPiece() != null 
 				 && (cur.getPiece().getColor() == this.getColor() || !cur.equals(finish))){
-				return false;
+				return TypeOfMove.INVALID;
 			}
 		}while(!cur.equals(finish));
 		
@@ -69,11 +69,11 @@ public class Rook extends Piece{
 			board.move(start, finish);
 			if(!king.checkedBy().isEmpty()){
 				board.undoMove(start, finish, taken);
-				return false;
+				return TypeOfMove.INVALID;
 			}
 			if (testMove) {
 				board.undoMove(start, finish, taken);
-				return true;
+				return TypeOfMove.INVALID;
 			}
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
@@ -81,7 +81,7 @@ public class Rook extends Piece{
 		}
 		
 		hasMoved = true;
-		return true;
+		return TypeOfMove.VALID;
 	}
 
 	/**
@@ -108,7 +108,7 @@ public class Rook extends Piece{
 
 		testMove = true;
 		
-		boolean possibleMove = move(north) || move(south) || move(east) || move(west);
+		boolean possibleMove = move(north) != TypeOfMove.INVALID || move(south) != TypeOfMove.INVALID || move(east) != TypeOfMove.INVALID || move(west) != TypeOfMove.INVALID;
 		testMove = false;
 		return possibleMove;
 	}

@@ -18,6 +18,7 @@ import android.widget.ImageButton;
 import android.content.res.Resources;
 
 import Chess.logic.chess.CurrentGame;
+import Chess.logic.chess.TypeOfMove;
 
 public class OppeartionCenter extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -26,6 +27,9 @@ public class OppeartionCenter extends AppCompatActivity
     public static String secondSelected = null;
     public static ImageButton firstSelectedTile;
     public static ImageButton secondSelectedTile;
+
+    public static GridLayout currentBoardDisplay;
+    public static Resources resources;
 
     public static CurrentGame currentGame;
 
@@ -51,6 +55,7 @@ public class OppeartionCenter extends AppCompatActivity
             return;
         }
 
+        resources = getResources();
         initializeBoard();
     }
 
@@ -105,7 +110,7 @@ public class OppeartionCenter extends AppCompatActivity
 
     public void initializeBoard(){
         GridLayout board = (GridLayout) findViewById(R.id.chessBoard);
-
+        currentBoardDisplay = board;
         //add an onClick to every square
         for(int i = 0; i < board.getChildCount(); i++){
             ImageButton currentSquare = (ImageButton) board.getChildAt(i);
@@ -134,7 +139,7 @@ public class OppeartionCenter extends AppCompatActivity
                 }
             });
 
-            String id = getResources().getResourceEntryName(currentSquare.getId());
+            /*String id = getResources().getResourceEntryName(currentSquare.getId());
             switch(id){
                 case "a1":
                 case "h1":
@@ -206,22 +211,97 @@ public class OppeartionCenter extends AppCompatActivity
                     break;
                 default:
                     break;
-            }
+            }*/
         }
+
+
+        redrawBoard();
     }
 
 
     public static void makeMove(){
         try{
-            if(currentGame.makeMove(firstSelected + " " + secondSelected)){
+            TypeOfMove madeMove = currentGame.makeMove(firstSelected + " " + secondSelected);
+
+            if(madeMove == TypeOfMove.VALID){
                 secondSelectedTile.setImageResource((Integer)firstSelectedTile.getTag());
                 secondSelectedTile.setTag(firstSelectedTile.getTag());
 
                 firstSelectedTile.setImageResource(android.R.color.transparent);
                 firstSelectedTile.setTag(android.R.color.transparent);
+            } else if(madeMove == TypeOfMove.PROMOTION || madeMove == TypeOfMove.CASTLE_LEFT || madeMove == TypeOfMove.CASTLE_RIGHT){// redraw 2 files
+                redrawBoard();
             }
+
+            currentGame.writeGame("currentGame");
         }catch(Exception e){
             return;
         }
     }
+
+
+
+    public static void redrawBoard(){
+        for(int i = 0; i < currentBoardDisplay.getChildCount(); i++){
+            ImageButton currentSquare = (ImageButton) currentBoardDisplay.getChildAt(i);
+            String id = resources.getResourceEntryName(currentSquare.getId());
+
+            switch (currentGame.getCurrentBoard().pieceAtString(id)){
+                case "wP":
+                    currentSquare.setImageResource(R.drawable.white_pawn);
+                    currentSquare.setTag(R.drawable.white_pawn);
+                    break;
+                case "wR":
+                    currentSquare.setImageResource(R.drawable.white_rook);
+                    currentSquare.setTag(R.drawable.white_rook);
+                    break;
+                case "wN":
+                    currentSquare.setImageResource(R.drawable.white_knight);
+                    currentSquare.setTag(R.drawable.white_knight);
+                    break;
+                case "wB":
+                    currentSquare.setImageResource(R.drawable.white_bishop);
+                    currentSquare.setTag(R.drawable.white_bishop);
+                    break;
+                case "wQ":
+                    currentSquare.setImageResource(R.drawable.white_queen);
+                    currentSquare.setTag(R.drawable.white_queen);
+                    break;
+                case "wK":
+                    currentSquare.setImageResource(R.drawable.white_king);
+                    currentSquare.setTag(R.drawable.white_king);
+                    break;
+                case "bP":
+                    currentSquare.setImageResource(R.drawable.black_pawn);
+                    currentSquare.setTag(R.drawable.black_pawn);
+                    break;
+                case "bR":
+                    currentSquare.setImageResource(R.drawable.black_rook);
+                    currentSquare.setTag(R.drawable.black_rook);
+                    break;
+                case "bN":
+                    currentSquare.setImageResource(R.drawable.black_knight);
+                    currentSquare.setTag(R.drawable.black_knight);
+                    break;
+                case "bB":
+                    currentSquare.setImageResource(R.drawable.black_bishop);
+                    currentSquare.setTag(R.drawable.black_bishop);
+                    break;
+                case "bQ":
+                    currentSquare.setImageResource(R.drawable.black_queen);
+                    currentSquare.setTag(R.drawable.black_queen);
+                    break;
+                case "bK":
+                    currentSquare.setImageResource(R.drawable.black_king);
+                    currentSquare.setTag(R.drawable.black_king);
+                    break;
+                default:
+                    currentSquare.setImageResource(android.R.color.transparent);
+                    currentSquare.setTag(android.R.color.transparent);
+                    break;
+            }
+        }
+        System.out.println("Board redrawn");
+    }
+
 }

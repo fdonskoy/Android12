@@ -35,7 +35,9 @@ public class CurrentGame implements Serializable{
 	 * Does this continuously until checkmate, draw, stalemate, or resign
 	 * @throws Exception if invalid file or rank
 	 */
-	public boolean makeMove(String move) throws Exception{
+	public TypeOfMove makeMove(String move) throws Exception{
+		TypeOfMove retVal = null;
+
 		//turn = true for white, false for black
 		if (currentBoard.whiteKing.checkmate() || currentBoard.blackKing.checkmate()) {
 			gameOver();
@@ -77,11 +79,11 @@ public class CurrentGame implements Serializable{
 				//checks from and to are equal
 				if (from.equals(to)) {
 					System.out.println("Illegal move, try again\n");
-					return false;
+					return TypeOfMove.INVALID;
 				}
 				if (from == null || to == null) {
 					System.out.println("Illegal move, try again\n");
-					return false;
+					return TypeOfMove.INVALID;
 				}
 
 				
@@ -92,7 +94,7 @@ public class CurrentGame implements Serializable{
 				piece = currentBoard.board[Position.rankToIndex(num)][letter].getPiece();
 				if (piece == null) {
 					System.out.println("Illegal move, try again\n");
-					return false;
+					return TypeOfMove.INVALID;
 				}
 				//if piece is null, go back to start of while loop
 				
@@ -100,21 +102,23 @@ public class CurrentGame implements Serializable{
 				if (currentBoard.turn == Color.White) {
 					if (piece.getColor() != Color.White) {
 						System.out.println("Illegal move, try again\n");
-						return false;
+						return TypeOfMove.INVALID;
 					}
 				}
 				else {
 					if (piece.getColor() != Color.Black) {
 						System.out.println("Illegal move, try again\n");
-						return false;
+						return TypeOfMove.INVALID;
 					}
 				}
 				
 				Position pos = new Position(num, to.charAt(0));
-	
-				if (!piece.move(currentBoard.board[Position.rankToIndex(pos.getRank())][Position.fileToIndex(pos.getFile())])) {
+
+                TypeOfMove moveAttempt = piece.move(currentBoard.board[Position.rankToIndex(pos.getRank())][Position.fileToIndex(pos.getFile())]);
+				retVal = moveAttempt;
+				if (moveAttempt == TypeOfMove.INVALID) {
 					System.out.println("Illegal move, try again\n");
-					return false;
+					return TypeOfMove.INVALID;
 				}
 				System.out.println("\n" + currentBoard);
 				
@@ -133,10 +137,23 @@ public class CurrentGame implements Serializable{
 			}
 			catch (Exception e) {
 				System.out.println("Illegal move, try again2\n");
-				return false;
+				return TypeOfMove.INVALID;
 			}
 
-			return true;
+
+			if(drawDeclared ){
+                return TypeOfMove.DRAW;
+            }
+
+            if(finished && currentBoard.turn == Color.White){
+                return TypeOfMove.BLACK_WIN;
+            }
+
+            if(finished && currentBoard.turn == Color.Black){
+                return TypeOfMove.WHITE_WIN;
+            }
+
+			return retVal;
 	}
 	
 	private void gameOver() {
@@ -241,5 +258,8 @@ public class CurrentGame implements Serializable{
 		currentTurnNum++;
 		
 	} 
-	
+
+	public Board getCurrentBoard(){
+		return currentBoard;
+	}
 }
