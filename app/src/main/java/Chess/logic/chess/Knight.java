@@ -25,20 +25,20 @@ public class Knight extends Piece {
 	 * @return true if move successful, false otherwise
 	 */
 	@Override
-	public boolean move(Position finish) {
+	public TypeOfMove move(Position finish) {
 		if (finish == null) {
-			return false;
+			return TypeOfMove.INVALID;
 		}
 		try {
 			if(!(	Math.abs(Position.fileToIndex(this.getPosition().getFile()) - Position.fileToIndex(finish.getFile())) ==  2 
 				 && Math.abs(Position.rankToIndex(this.getPosition().getRank()) - Position.rankToIndex(finish.getRank())) == 1)
 			  &&!(	Math.abs(Position.fileToIndex(this.getPosition().getFile()) - Position.fileToIndex(finish.getFile())) ==  1 
 				 && Math.abs(Position.rankToIndex(this.getPosition().getRank()) - Position.rankToIndex(finish.getRank())) == 2)){				
-				return false;
+				return TypeOfMove.INVALID;
 			}
 			
 			if(finish.getPiece() != null && finish.getPiece().getColor() == this.getColor()){
-				return false;
+				return TypeOfMove.INVALID;
 			}
 			
 			//Perform the move. If this leaves you king in check, undo the move and return false
@@ -48,19 +48,19 @@ public class Knight extends Piece {
 			board.move(start, finish);
 			if(king.inCheck()){
 				board.undoMove(start, finish, taken);
-				return false;
+				return TypeOfMove.INVALID;
 			}
 			if (testMove) {
 				board.undoMove(start, finish, taken);
-				return true;
+				return TypeOfMove.INVALID;
 			}
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-			return false;
+			return TypeOfMove.INVALID;
 		}
 		
-		return true;
+		return TypeOfMove.VALID;
 	}
 
 	/**
@@ -83,7 +83,14 @@ public class Knight extends Piece {
 		
 		testMove = true;
 		
-		boolean possibleMove = move(northEast) || move(northEast2) || move(southEast) || move(southEast2) || move(northWest) || move(northWest2) || move(southWest) || move(southWest2);
+		boolean possibleMove = move(northEast) == TypeOfMove.VALID
+							|| move(northEast2) == TypeOfMove.VALID
+							|| move(southEast) == TypeOfMove.VALID
+							|| move(southEast2) == TypeOfMove.VALID
+							|| move(northWest) == TypeOfMove.VALID
+							|| move(northWest2) == TypeOfMove.VALID
+							|| move(southWest) == TypeOfMove.VALID
+							|| move(southWest2) == TypeOfMove.VALID;
 		testMove = false;
 		return possibleMove;
 	}

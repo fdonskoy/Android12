@@ -192,4 +192,17 @@ public class Board implements Serializable {
 		
 		return retval;
 	}
+
+	public String pieceAtString(String position){
+		try{
+			int rank = Position.rankToIndex(position.charAt(1) - 48);
+			int file = Position.fileToIndex(position.charAt(0));
+
+			Piece piece = board[rank][file].getPiece();
+
+			return (piece == null) ? "" : piece.toString();
+		}catch(Exception e){
+			return null;
+		}
+	}
 }

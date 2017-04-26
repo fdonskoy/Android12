@@ -68,7 +68,7 @@ public abstract class Piece implements Serializable {
 	/**@param finish the new position the piece is to attempt to move to
 	 * @return true if move successful, false otherwise
 	*/
-	public abstract boolean move(Position finish);
+	public abstract TypeOfMove move(Position finish);
 	
 	
 }
