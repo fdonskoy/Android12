@@ -257,7 +257,18 @@ public class CurrentGame implements Serializable{
 		makeMove(listMoves.get(currentTurnNum));
 		currentTurnNum++;
 		
-	} 
+	}
+
+	public void resign() {
+		listMoves.add("resign");
+		gameOver();
+	}
+
+	public void draw() {
+		listMoves.add("draw");
+		drawDeclared = true;
+		gameOver();
+	}
 
 	public Board getCurrentBoard(){
 		return currentBoard;
