@@ -229,7 +229,7 @@ public class OppeartionCenter extends AppCompatActivity
 
                 firstSelectedTile.setImageResource(android.R.color.transparent);
                 firstSelectedTile.setTag(android.R.color.transparent);
-            } else if(madeMove == TypeOfMove.PROMOTION || madeMove == TypeOfMove.CASTLE_LEFT || madeMove == TypeOfMove.CASTLE_RIGHT){// redraw 2 files
+            } else if(madeMove == TypeOfMove.EN_PASSANT || madeMove == TypeOfMove.PROMOTION || madeMove == TypeOfMove.CASTLE_LEFT || madeMove == TypeOfMove.CASTLE_RIGHT){// redraw 2 files
                 redrawBoard();
             }
 
