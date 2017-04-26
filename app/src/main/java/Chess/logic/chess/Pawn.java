@@ -12,6 +12,7 @@ public class Pawn extends Piece {
 	 * used when pawn is requested to move up two tiles and in en passant for move history
 	 */
 	int lastTurnMoved = 0;
+	boolean up2 = false;
 	
 	/**
 	 * @author Timothy Elbert
@@ -59,7 +60,7 @@ public class Pawn extends Piece {
 					if (this.lastTurnMoved == 0) {
 						if (diff == 1 && current.getNorth().getPiece() == null) {
 							//check for queen promotion
-							
+
 							return movePawn(start, finish, taken);
 						}
 						if (diff == 2 && current.getNorth().getPiece() == null && current.getNorth().getNorth().getPiece() == null) {
@@ -153,6 +154,7 @@ public class Pawn extends Piece {
 			}
 			if (testMove) {
 				board.undoMove(start, finish, taken);
+
 				return TypeOfMove.VALID;
 			}
 
@@ -161,6 +163,12 @@ public class Pawn extends Piece {
 			e.printStackTrace();
 		}
 
+		if (Math.abs(start.getRank() - finish.getRank()) == 2) {
+			this.up2 = true;
+		}
+		else {
+			this.up2 = false;
+		}
 		this.lastTurnMoved = board.turnNum;
 
 		return promotion();
@@ -204,23 +212,25 @@ public class Pawn extends Piece {
 	 */
 	private TypeOfMove passant(Position target) {
 		if (this.getColor() == Color.White) {
-			if (target.getSouth().getSouth().getPiece() != null && target.getSouth().getSouth().getPiece().getClass() == Pawn.class) {
+			if (target.getSouth().getPiece() != null && target.getSouth().getPiece().getClass() == Pawn.class) {
 				Pawn p = (Pawn) target.getSouth().getPiece();
-				if (p.getColor() != this.getColor() && p.lastTurnMoved == board.turnNum ) {
+				if (p.getColor() != this.getColor() && p.lastTurnMoved == board.turnNum  && p.up2) {
 					if (movePawn(this.getPosition(), target, p) != TypeOfMove.INVALID) {
 						p.getPosition().setPiece(null);
 						return TypeOfMove.EN_PASSANT;
+						//return TypeOfMove.VALID;
 					}
 				}
 			}
 		}
 		else {
-			if (target.getNorth().getNorth().getPiece() != null && target.getNorth().getNorth().getPiece().getClass() == Pawn.class) {
+			if (target.getNorth().getPiece() != null && target.getNorth().getPiece().getClass() == Pawn.class) {
 				Pawn p = (Pawn) target.getNorth().getPiece();
-				if (p.getColor() != this.getColor() && p.lastTurnMoved == board.turnNum ) {
+				if (p.getColor() != this.getColor() && p.lastTurnMoved == board.turnNum && p.up2) {
 					if (movePawn(this.getPosition(), target, p) != TypeOfMove.INVALID) {
 						p.getPosition().setPiece(null);
 						return TypeOfMove.EN_PASSANT;
+						//return TypeOfMove.VALID;
 					}
 				}
 			}
