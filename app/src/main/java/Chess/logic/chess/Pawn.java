@@ -34,15 +34,15 @@ public class Pawn extends Piece {
 	@Override
 	//if pawn is in initial row, can move two squares, else only one square
 	//also check for en passant and promotion in move pawn
-	public boolean move(Position finish) {
+	public TypeOfMove move(Position finish) {
 		if (finish == null) {
-			return false;
+			return  TypeOfMove.INVALID;
 		}
 		if (this.getPosition().getRank() - finish.getRank() > 2) {
-			return false;
+			return TypeOfMove.INVALID;
 		}
 		else if (this.getPosition().getRank() - finish.getRank() == 2 && this.lastTurnMoved != 0 ) {
-			return false;
+			return TypeOfMove.INVALID;
 		}
 		// TODO Auto-generated method stub
 		Position current = this.getPosition();
@@ -134,7 +134,7 @@ public class Pawn extends Piece {
 		}
 		
 		//Perform the move. If this leaves you king in check, undo the move and return false
-		return false;
+		return TypeOfMove.INVALID;
 	}
 	/**
 	 * @author Filip Donskoy
@@ -144,16 +144,16 @@ public class Pawn extends Piece {
 	 * moves the pawn, providing it doesn't leave the king in check
 	 * @return true if the move was successful
 	 */
-	private boolean movePawn(Position start, Position finish, Piece taken) {
+	private TypeOfMove movePawn(Position start, Position finish, Piece taken) {
 		try {
 			board.move(start, finish);
 			if(!king.checkedBy().isEmpty()){
 				board.undoMove(start, finish, taken);
-				return false;
+				return TypeOfMove.INVALID;
 			}
 			if (testMove) {
 				board.undoMove(start, finish, taken);
-				return true;
+				return TypeOfMove.VALID;
 			}
 
 		} catch (Exception e) {
@@ -162,15 +162,15 @@ public class Pawn extends Piece {
 		}
 
 		this.lastTurnMoved = board.turnNum;
-		promotion();
-		return true;
+
+		return promotion();
 	}
 	/**
 	 * @author Filip Donskoy
 	 * Replaces the pawn with the requested piece
 	 * Places a Queen by default
 	 */
-	private void promotion(){
+	private TypeOfMove promotion(){
 		if ( (this.getPosition().getRank() == 8 && this.getColor() == Color.White) || (this.getPosition().getRank() == 1 && this.getColor() == Color.Black)) {
 			try {
 				this.getPosition().setPiece(null);
@@ -186,14 +186,15 @@ public class Pawn extends Piece {
 					this.getPosition().setPiece(new Bishop(this.getPosition(), this.getColor(), king, this.board));
 				}
 				
-				
+				return TypeOfMove.PROMOTION;
 
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
+				return TypeOfMove.INVALID;
 			}
 		}
-		return;
+		return TypeOfMove.VALID;
 	}
 	/**
 	 * @author Filip Donskoy
@@ -201,14 +202,14 @@ public class Pawn extends Piece {
 	 * Uses lastTurnMoved to see if the opposing pawn had moved 2 tiles in the previous move
 	 * @return true if en passant is a valid move for this pawn
 	 */
-	private boolean passant(Position target) {
+	private TypeOfMove passant(Position target) {
 		if (this.getColor() == Color.White) {
 			if (target.getSouth().getSouth().getPiece() != null && target.getSouth().getSouth().getPiece().getClass() == Pawn.class) {
 				Pawn p = (Pawn) target.getSouth().getPiece();
 				if (p.getColor() != this.getColor() && p.lastTurnMoved == board.turnNum ) {
-					if (movePawn(this.getPosition(), target, p)) {
+					if (movePawn(this.getPosition(), target, p) != TypeOfMove.INVALID) {
 						p.getPosition().setPiece(null);
-						return true;
+						return TypeOfMove.EN_PASSANT;
 					}
 				}
 			}
@@ -217,14 +218,14 @@ public class Pawn extends Piece {
 			if (target.getNorth().getNorth().getPiece() != null && target.getNorth().getNorth().getPiece().getClass() == Pawn.class) {
 				Pawn p = (Pawn) target.getNorth().getPiece();
 				if (p.getColor() != this.getColor() && p.lastTurnMoved == board.turnNum ) {
-					if (movePawn(this.getPosition(), target, p)) {
+					if (movePawn(this.getPosition(), target, p) != TypeOfMove.INVALID) {
 						p.getPosition().setPiece(null);
-						return true;
+						return TypeOfMove.EN_PASSANT;
 					}
 				}
 			}
 		}
-		return false;
+		return TypeOfMove.INVALID;
 	}
 	/**
 	 * @author Timothy Elbert
@@ -263,7 +264,14 @@ public class Pawn extends Piece {
 		
 		testMove = true;
 		
-		boolean possibleMove = move(north) || move(northNorth) || move(south) || move(southSouth) || move(northEast) || move(northWest) || move(southEast) || move(southWest);
+		boolean possibleMove = move(north) != TypeOfMove.INVALID
+							|| move(northNorth) != TypeOfMove.INVALID
+							|| move(south) != TypeOfMove.INVALID
+							|| move(southSouth) != TypeOfMove.INVALID
+							|| move(northEast) != TypeOfMove.INVALID
+							|| move(northWest) != TypeOfMove.INVALID
+							|| move(southEast) != TypeOfMove.INVALID
+							|| move(southWest) != TypeOfMove.INVALID;
 
 		testMove = false;
 		return possibleMove;
