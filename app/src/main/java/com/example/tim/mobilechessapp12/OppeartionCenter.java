@@ -64,6 +64,9 @@ public class OppeartionCenter extends AppCompatActivity
                 currentGame = (CurrentGame)oi.readObject();
                 oi.close();
                 fi.close();
+                if (currentGame.finished) {
+                    currentGame = new CurrentGame();
+                }
             } catch (Exception e) {
                 e.printStackTrace();currentGame = new CurrentGame();
             }
@@ -249,7 +252,12 @@ public class OppeartionCenter extends AppCompatActivity
             } else if(madeMove == TypeOfMove.EN_PASSANT || madeMove == TypeOfMove.PROMOTION || madeMove == TypeOfMove.CASTLE_LEFT || madeMove == TypeOfMove.CASTLE_RIGHT){// redraw 2 files
                 redrawBoard();
             }
-
+            if (currentGame.currentBoard.whiteKing.checkmate() ) {
+                Toast.makeText(getApplicationContext(), "Checkmate! Black wins!", Toast.LENGTH_LONG).show();
+            }
+            if (currentGame.currentBoard.blackKing.checkmate()) {
+                Toast.makeText(getApplicationContext(), "Checkmate! White wins!", Toast.LENGTH_LONG).show();
+            }
             File file = new File(getApplicationContext().getFilesDir(), "data.dat");
 
             try {
@@ -260,7 +268,7 @@ public class OppeartionCenter extends AppCompatActivity
                 out.close();
                 fileOut.close();
                 System.out.printf("Serialized data is saved in /tmp/employee.ser");
-                Toast.makeText(getApplicationContext(), "test saved", Toast.LENGTH_LONG).show();
+                //Toast.makeText(getApplicationContext(), "test saved", Toast.LENGTH_LONG).show();
             } catch (Exception e) {
                 e.printStackTrace();
             }
