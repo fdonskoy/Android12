@@ -1,5 +1,8 @@
 package Chess.logic.chess;
 
+import android.support.v7.app.AppCompatActivity;
+import android.content.Context;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -221,11 +224,12 @@ public class CurrentGame implements Serializable{
 	}
 	
 	public void writeGame(String title) throws IOException {
-		File f = new File("src/savedGames" + File.separator + title);
+
+		File f = new File("src/main/java/Chess/logic/chess/savedGames" + File.separator + title + ".ser");
 		if(!f.exists())
 		    f.createNewFile();
 		ObjectOutputStream oos = new ObjectOutputStream(
-									new FileOutputStream("src/savedGames" + File.separator + title));
+									new FileOutputStream("src/main/java/Chess/logic/chess/savedGames" + File.separator + title + ".ser"));
 		oos.writeObject(this);
 		oos.close(); 
 		DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
@@ -235,7 +239,7 @@ public class CurrentGame implements Serializable{
 	} 
 	
 	public CurrentGame readGame (String title) throws IOException, Exception, ClassNotFoundException {
-		ObjectInputStream ois = new ObjectInputStream(new FileInputStream("src/savedGames" + File.separator + title));
+		ObjectInputStream ois = new ObjectInputStream(new FileInputStream("src/main/java/Chess/logic/chess/savedGames" + File.separator + title + ".ser"));
 		CurrentGame user = (CurrentGame)ois.readObject();
 		ois.close();
 		return user;

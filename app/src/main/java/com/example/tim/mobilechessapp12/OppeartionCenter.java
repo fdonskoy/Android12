@@ -16,6 +16,13 @@ import android.util.Log;
 import android.widget.GridLayout;
 import android.widget.ImageButton;
 import android.content.res.Resources;
+import android.widget.Toast;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 
 import Chess.logic.chess.CurrentGame;
 import Chess.logic.chess.TypeOfMove;
@@ -50,7 +57,17 @@ public class OppeartionCenter extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
 
         try{
-            currentGame = new CurrentGame();
+            File file = new File(getApplicationContext().getFilesDir(), "data.dat");
+            try {
+                FileInputStream fi = new FileInputStream(file);
+                ObjectInputStream oi = new ObjectInputStream(fi);
+                currentGame = (CurrentGame)oi.readObject();
+                oi.close();
+                fi.close();
+            } catch (Exception e) {
+                e.printStackTrace();currentGame = new CurrentGame();
+            }
+
         } catch(Exception e){
             return;
         }
@@ -219,7 +236,7 @@ public class OppeartionCenter extends AppCompatActivity
     }
 
 
-    public static void makeMove(){
+    public void makeMove(){
         try{
             TypeOfMove madeMove = currentGame.makeMove(firstSelected + " " + secondSelected);
 
@@ -233,8 +250,25 @@ public class OppeartionCenter extends AppCompatActivity
                 redrawBoard();
             }
 
-            currentGame.writeGame("currentGame");
+            File file = new File(getApplicationContext().getFilesDir(), "data.dat");
+
+            try {
+                FileOutputStream fileOut =
+                        new FileOutputStream(file);
+                ObjectOutputStream out = new ObjectOutputStream(fileOut);
+                out.writeObject(currentGame);
+                out.close();
+                fileOut.close();
+                System.out.printf("Serialized data is saved in /tmp/employee.ser");
+                Toast.makeText(getApplicationContext(), "test saved", Toast.LENGTH_LONG).show();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+
+            //currentGame.writeGame("currentGame");
         }catch(Exception e){
+            Log.e("AppCompatActivity",Log.getStackTraceString(e));
             return;
         }
     }
