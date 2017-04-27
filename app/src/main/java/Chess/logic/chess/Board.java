@@ -17,7 +17,7 @@ public class Board implements Serializable {
 	/**double array storing the positions(squares) of the game board*/
 	Position[][] board;
 	/**whose turn it is in current state*/
-	Color turn;
+	public Color turn;
 	/**number of turns since start of the game*/
 	public int turnNum;
 	/**stores the kings of both teams to check for checks, mates, and stalemates
