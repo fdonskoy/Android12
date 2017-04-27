@@ -62,24 +62,17 @@ public class OppeartionCenter extends AppCompatActivity
 
         //Button resign = (Button)findViewById(R.id.resign);
 
-        try{
-            File file = new File(getApplicationContext().getFilesDir(), "data.dat");
-            try {
-                FileInputStream fi = new FileInputStream(file);
-                ObjectInputStream oi = new ObjectInputStream(fi);
-                currentGame = (CurrentGame)oi.readObject();
-                oi.close();
-                fi.close();
-                if (currentGame.finished) {
-                    currentGame = new CurrentGame();
-                }
-            } catch (Exception e) {
-                e.printStackTrace();currentGame = new CurrentGame();
-            }
 
-        } catch(Exception e){
+
+        try {
+            if (!readIt("data.dat")) {
+                currentGame = new CurrentGame();
+            }
+        }
+        catch (Exception e) {
             return;
         }
+
 
         resources = getResources();
         initializeBoard();
@@ -107,11 +100,11 @@ public class OppeartionCenter extends AppCompatActivity
         Boolean made = false;
         made = currentGame.makeAImove();
         if (made) {
-            Toast.makeText(getApplicationContext(), "AI generated", Toast.LENGTH_LONG).show();
+            Toast.makeText(getApplicationContext(), "AI generated", Toast.LENGTH_SHORT).show();
             redrawBoard();
         }
         else {
-            Toast.makeText(getApplicationContext(), "Failed to generate AI", Toast.LENGTH_LONG).show();
+            Toast.makeText(getApplicationContext(), "Failed to generate AI", Toast.LENGTH_SHORT).show();
         }
 
     }
@@ -130,16 +123,19 @@ public class OppeartionCenter extends AppCompatActivity
                         Toast.makeText(getApplicationContext(), "draw", Toast.LENGTH_LONG).show();
                     }})
                 .setNegativeButton(android.R.string.no, null).show();
-
-
     }
 
-    public void undoMove(View v) {
+    public void undoMove(View v) throws Exception {
         if (currentGame.finished) {
             return;
         }
-        currentGame.draw();
-        Toast.makeText(getApplicationContext(), "draw", Toast.LENGTH_LONG).show();
+        if (readIt("Undo.dat")){
+            Toast.makeText(getApplicationContext(), "Move undone", Toast.LENGTH_SHORT).show();
+            redrawBoard();
+        }
+        else {
+            Toast.makeText(getApplicationContext(), "Can't undo!", Toast.LENGTH_SHORT).show();
+        }
     }
 
 
@@ -305,6 +301,7 @@ public class OppeartionCenter extends AppCompatActivity
 
     public void makeMove(){
         try{
+            Boolean x = writeIt("Undo.dat");
             TypeOfMove madeMove = currentGame.makeMove(firstSelected + " " + secondSelected);
 
             if(madeMove == TypeOfMove.VALID){
@@ -322,20 +319,7 @@ public class OppeartionCenter extends AppCompatActivity
             if (currentGame.currentBoard.blackKing.checkmate()) {
                 Toast.makeText(getApplicationContext(), "Checkmate! White wins!", Toast.LENGTH_LONG).show();
             }
-            File file = new File(getApplicationContext().getFilesDir(), "data.dat");
-
-            try {
-                FileOutputStream fileOut =
-                        new FileOutputStream(file);
-                ObjectOutputStream out = new ObjectOutputStream(fileOut);
-                out.writeObject(currentGame);
-                out.close();
-                fileOut.close();
-                System.out.printf("Serialized data is saved in /tmp/employee.ser");
-                //Toast.makeText(getApplicationContext(), "test saved", Toast.LENGTH_LONG).show();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+            Boolean t = writeIt("data.dat");
 
 
             //currentGame.writeGame("currentGame");
@@ -410,4 +394,37 @@ public class OppeartionCenter extends AppCompatActivity
         System.out.println("Board redrawn");
     }
 
+    private boolean readIt(String title) throws Exception{
+        File file = new File(getApplicationContext().getFilesDir(), title);
+        if (!file.exists()) {
+            return false;
+        }
+        FileInputStream fi = new FileInputStream(file);
+        ObjectInputStream oi = new ObjectInputStream(fi);
+        currentGame = (CurrentGame)oi.readObject();
+        oi.close();
+        fi.close();
+        if (currentGame.finished){
+            return false;
+        }
+        return true;
+    }
+
+    private boolean writeIt(String title) throws Exception{
+        File file = new File(getApplicationContext().getFilesDir(), title);
+
+        try {
+            FileOutputStream fileOut =
+                    new FileOutputStream(file);
+            ObjectOutputStream out = new ObjectOutputStream(fileOut);
+            out.writeObject(currentGame);
+            out.close();
+            fileOut.close();
+            //Toast.makeText(getApplicationContext(), "test saved", Toast.LENGTH_LONG).show();
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
 }
