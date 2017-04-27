@@ -21,12 +21,13 @@ public class CurrentGame implements Serializable{
 	
 	static String toFrom[] = new String[3];
 	public Board currentBoard;
-	
+
 	boolean requestedDraw = false;
 	boolean drawDeclared = false;
 	public boolean finished=  false;
 	int currentTurnNum = 0;
 	String dateSaved;
+
 		
 	public CurrentGame() throws Exception {
 		currentBoard = new Board();
@@ -123,6 +124,9 @@ public class CurrentGame implements Serializable{
 					System.out.println("Illegal move, try again\n");
 					return TypeOfMove.INVALID;
 				}
+
+
+
 				System.out.println("\n" + currentBoard);
 				
 				
@@ -136,6 +140,8 @@ public class CurrentGame implements Serializable{
 				if (!finished) {
 					listMoves.add(from + " " + to);
 				}
+
+
 				
 			}
 			catch (Exception e) {
@@ -263,10 +269,6 @@ public class CurrentGame implements Serializable{
 		
 	}
 
-    public void undo() {
-        // this is documentation
-        listMoves.remove(listMoves.size()-1);
-    }
 
 	public void resign() {
 		listMoves.add("resign");
