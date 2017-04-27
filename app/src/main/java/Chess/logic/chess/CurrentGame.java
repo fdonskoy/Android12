@@ -263,6 +263,11 @@ public class CurrentGame implements Serializable{
 		
 	}
 
+    public void undo() {
+        // this is documentation
+        listMoves.remove(listMoves.size()-1);
+    }
+
 	public void resign() {
 		listMoves.add("resign");
 		gameOver();

@@ -1,8 +1,10 @@
 package com.example.tim.mobilechessapp12;
 
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v7.app.AlertDialog;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -118,8 +120,18 @@ public class OppeartionCenter extends AppCompatActivity
         if (currentGame.finished) {
             return;
         }
-        currentGame.draw();
-        Toast.makeText(getApplicationContext(), "draw", Toast.LENGTH_LONG).show();
+        new AlertDialog.Builder(this)
+        .setTitle("Title")
+                .setMessage("Draw requested. Accept?")
+                .setIcon(android.R.drawable.ic_dialog_alert)
+                .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int whichButton) {
+                        currentGame.draw();
+                        Toast.makeText(getApplicationContext(), "draw", Toast.LENGTH_LONG).show();
+                    }})
+                .setNegativeButton(android.R.string.no, null).show();
+
+
     }
 
     public void undoMove(View v) {
