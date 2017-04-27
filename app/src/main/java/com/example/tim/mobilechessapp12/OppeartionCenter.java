@@ -85,7 +85,13 @@ public class OppeartionCenter extends AppCompatActivity
 
 
         resources = getResources();
-        initializeBoard();
+        try {
+            initializeBoard();
+        }
+        catch (Exception e) {
+            return;
+        }
+
     }
 
     public void resign(View v) {
@@ -191,16 +197,30 @@ public class OppeartionCenter extends AppCompatActivity
 
         if (id == R.id.new_game_btn) {
             Log.d("My APP", "new game");
+            if (currentGame.currentBoard.turnNum != 1) {
+                saveGameTitleOrNah();
+            }
         } else if (id == R.id.old_game_btn) {
             Log.d("My APP", "old games");
+            try {
+                writeIt("data.dat");
+            }
+            catch (Exception e) {
+                return false;
+            }
+            Toast.makeText(getApplicationContext(), "Clicked Nav item", Toast.LENGTH_LONG).show();
+            setContentView(R.layout.load_old_games);
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
+
+
         return true;
     }
 
-    public void initializeBoard(){
+    public void initializeBoard() throws Exception{
+        currentGame = new CurrentGame();
         GridLayout board = (GridLayout) findViewById(R.id.chessBoard);
         currentBoardDisplay = board;
         //add an onClick to every square
