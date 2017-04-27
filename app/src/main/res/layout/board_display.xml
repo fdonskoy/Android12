@@ -5,6 +5,55 @@
     android:layout_height="match_parent"
     tools:context="com.example.tim.mobilechessapp12.boardOperations">
 
+    <Button
+        android:id="@+id/undo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignStart="@+id/draw"
+        android:layout_alignTop="@+id/randomMove"
+        android:text="Undo"
+        android:onClick="undoMove"
+        tools:layout_editor_absoluteX="54dp"
+        tools:layout_editor_absoluteY="16dp" />
+
+    <Button
+        android:id="@+id/randomMove"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Random Move"
+        android:onClick="randomMove"
+        tools:layout_editor_absoluteX="222dp"
+        tools:layout_editor_absoluteY="16dp"
+        android:layout_alignParentTop="true"
+        android:layout_alignEnd="@+id/chessBoard"
+        android:layout_marginTop="14dp" />
+
+    <Button
+        android:id="@+id/draw"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Draw"
+        android:onClick="draw"
+        tools:layout_editor_absoluteX="63dp"
+        tools:layout_editor_absoluteY="431dp"
+        android:layout_marginTop="22dp"
+        android:layout_below="@+id/chessBoard"
+        android:layout_alignStart="@+id/chessBoard"
+        android:layout_marginStart="28dp" />
+
+    <Button
+        android:id="@+id/resign"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/draw"
+        android:layout_alignBottom="@+id/draw"
+        android:layout_alignStart="@+id/randomMove"
+        android:layout_marginStart="14dp"
+        android:text="Resign"
+        android:onClick="resign"
+        tools:layout_editor_absoluteX="222dp"
+        tools:layout_editor_absoluteY="431dp" />
+
     <GridLayout
         android:id="@+id/chessBoard"
         android:layout_width="wrap_content"

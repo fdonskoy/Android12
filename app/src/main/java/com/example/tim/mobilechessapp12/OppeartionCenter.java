@@ -13,6 +13,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.util.Log;
+import android.widget.Button;
 import android.widget.GridLayout;
 import android.widget.ImageButton;
 import android.content.res.Resources;
@@ -24,6 +25,7 @@ import java.io.FileOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
+import Chess.logic.chess.Color;
 import Chess.logic.chess.CurrentGame;
 import Chess.logic.chess.TypeOfMove;
 
@@ -56,6 +58,8 @@ public class OppeartionCenter extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
+        //Button resign = (Button)findViewById(R.id.resign);
+
         try{
             File file = new File(getApplicationContext().getFilesDir(), "data.dat");
             try {
@@ -78,6 +82,54 @@ public class OppeartionCenter extends AppCompatActivity
         resources = getResources();
         initializeBoard();
     }
+
+    public void resign(View v) {
+        //Toast.makeText(getApplicationContext(), "Hey we resigned so well", Toast.LENGTH_LONG).show();
+        if (currentGame.finished) {
+            return;
+        }
+        if (currentGame.currentBoard.turn.equals(Color.White)) {
+            Toast.makeText(getApplicationContext(), "White resigned. Black wins!", Toast.LENGTH_LONG).show();
+        }
+        if (currentGame.currentBoard.turn.equals(Color.Black)) {
+            Toast.makeText(getApplicationContext(), "Black resigned. White wins!", Toast.LENGTH_LONG).show();
+        }
+        currentGame.resign();
+
+    }
+
+    public void randomMove(View v) {
+        if (currentGame.finished) {
+            return;
+        }
+        Boolean made = false;
+        made = currentGame.makeAImove();
+        if (made) {
+            Toast.makeText(getApplicationContext(), "AI generated", Toast.LENGTH_LONG).show();
+            redrawBoard();
+        }
+        else {
+            Toast.makeText(getApplicationContext(), "Failed to generate AI", Toast.LENGTH_LONG).show();
+        }
+
+    }
+    //need to put in prompt for accept draw
+    public void draw(View v) {
+        if (currentGame.finished) {
+            return;
+        }
+        currentGame.draw();
+        Toast.makeText(getApplicationContext(), "draw", Toast.LENGTH_LONG).show();
+    }
+
+    public void undoMove(View v) {
+        if (currentGame.finished) {
+            return;
+        }
+        currentGame.draw();
+        Toast.makeText(getApplicationContext(), "draw", Toast.LENGTH_LONG).show();
+    }
+
 
     @Override
     public void onBackPressed() {
