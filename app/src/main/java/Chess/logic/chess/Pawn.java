@@ -271,8 +271,10 @@ public class Pawn extends Piece {
 		Position northWest = this.getPosition().getNorthWest();
 		Position southEast = this.getPosition().getSouthEast();
 		Position southWest = this.getPosition().getSouthWest();
-		
-		testMove = true;
+
+		if (!overrideTestMove) {
+			testMove = true;
+		}
 		
 		boolean possibleMove = move(north) != TypeOfMove.INVALID
 							|| move(northNorth) != TypeOfMove.INVALID
