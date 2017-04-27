@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
+import android.text.InputType;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -16,6 +17,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.util.Log;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.GridLayout;
 import android.widget.ImageButton;
 import android.content.res.Resources;
@@ -68,6 +70,14 @@ public class OppeartionCenter extends AppCompatActivity
             if (!readIt("data.dat")) {
                 currentGame = new CurrentGame();
             }
+            //Kid's Mate exists but is finished, so it was rejected when it was read as the currentGame
+            /*if (!readIt("Kid's Mate")) {
+                Toast.makeText(getApplicationContext(), "Didn't find Kid's Mate", Toast.LENGTH_LONG).show();
+                currentGame = new CurrentGame();
+            }
+            else {
+                Toast.makeText(getApplicationContext(), "State of finished in Kid's Mate is " + currentGame.finished, Toast.LENGTH_LONG).show();
+            }*/
         }
         catch (Exception e) {
             return;
@@ -90,6 +100,7 @@ public class OppeartionCenter extends AppCompatActivity
             Toast.makeText(getApplicationContext(), "Black resigned. White wins!", Toast.LENGTH_LONG).show();
         }
         currentGame.resign();
+        saveGameTitleOrNah();
 
     }
 
@@ -121,6 +132,7 @@ public class OppeartionCenter extends AppCompatActivity
                     public void onClick(DialogInterface dialog, int whichButton) {
                         currentGame.draw();
                         Toast.makeText(getApplicationContext(), "draw", Toast.LENGTH_LONG).show();
+                        saveGameTitleOrNah();
                     }})
                 .setNegativeButton(android.R.string.no, null).show();
     }
@@ -300,7 +312,11 @@ public class OppeartionCenter extends AppCompatActivity
 
 
     public void makeMove(){
+        if (currentGame.finished) {
+            return;
+        }
         try{
+
             Boolean x = writeIt("Undo.dat");
             TypeOfMove madeMove = currentGame.makeMove(firstSelected + " " + secondSelected);
 
@@ -315,10 +331,13 @@ public class OppeartionCenter extends AppCompatActivity
             }
             if (currentGame.currentBoard.whiteKing.checkmate() ) {
                 Toast.makeText(getApplicationContext(), "Checkmate! Black wins!", Toast.LENGTH_LONG).show();
+                saveGameTitleOrNah();
             }
             if (currentGame.currentBoard.blackKing.checkmate()) {
                 Toast.makeText(getApplicationContext(), "Checkmate! White wins!", Toast.LENGTH_LONG).show();
+                saveGameTitleOrNah();
             }
+
             Boolean t = writeIt("data.dat");
 
 
@@ -329,7 +348,54 @@ public class OppeartionCenter extends AppCompatActivity
         }
     }
 
+    private void saveGameTitleOrNah() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Enter a title to save the game");
 
+        // Set up the input
+        final EditText input = new EditText(this);
+        // Specify the type of input expected; this, for example, sets the input as a password, and will mask the text
+        input.setInputType(InputType.TYPE_TEXT_VARIATION_NORMAL);
+        builder.setView(input);
+
+        // Set up the buttons
+        builder.setPositiveButton("Save", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                final String m_Text = input.getText().toString();
+                try {
+                    Toast.makeText(getApplicationContext(), "Saved " + m_Text , Toast.LENGTH_SHORT).show();
+                    currentGame.finished = true;
+                    if (writeIt(m_Text)) {
+                        currentGame = new CurrentGame();
+                        redrawBoard();
+                    }
+                    else {
+                        Toast.makeText(getApplicationContext(), "Failed to write finished game " + m_Text , Toast.LENGTH_SHORT).show();
+                    }
+                }
+                catch (Exception e) {
+                    Toast.makeText(getApplicationContext(), "Failed to save", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+            }
+        });
+        builder.setNegativeButton("Cancel and Start New Game", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                try {
+                    currentGame = new CurrentGame();
+                    redrawBoard();
+                }
+                catch (Exception e) {
+                    Toast.makeText(getApplicationContext(), "Failed to restart new game", Toast.LENGTH_SHORT).show();
+                }
+                dialog.cancel();
+            }
+        });
+
+        builder.show();
+    }
 
     public static void redrawBoard(){
         for(int i = 0; i < currentBoardDisplay.getChildCount(); i++){
@@ -394,9 +460,17 @@ public class OppeartionCenter extends AppCompatActivity
         System.out.println("Board redrawn");
     }
 
+    //need to cycle through all files
     private boolean readIt(String title) throws Exception{
-        File file = new File(getApplicationContext().getFilesDir(), title);
-        if (!file.exists()) {
+        File file = null;
+        File[] listOfFiles = getFilesDir().listFiles();
+        for (File f: listOfFiles) {
+            if (f.getName().equals(title)) {
+                file = f;
+                break;
+            }
+        }
+        if (file == null) {
             return false;
         }
         FileInputStream fi = new FileInputStream(file);
