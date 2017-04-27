@@ -270,6 +270,35 @@ public class CurrentGame implements Serializable{
 		gameOver();
 	}
 
+	public boolean makeAImove() {
+		Position start = null;
+		if (currentBoard.turn == Color.White) {
+			for(Piece piece : currentBoard.whiteKing.team){
+				start = piece.getPosition();
+				if (piece.makeMove()) {
+					System.out.println(currentBoard);
+					piece.overrideTestMove = false;
+					listMoves.add("" + start.getFile() + start.getRank() + " " + piece.getPosition().getFile() + piece.getPosition().getRank());
+					return true;
+				}
+			}
+		}
+		else {
+			for(Piece piece : currentBoard.blackKing.team){
+				start = piece.getPosition();
+				if (piece.makeMove()) {
+					System.out.println(currentBoard);
+					piece.overrideTestMove = false;
+					listMoves.add("" + start.getFile() + start.getRank() + " " + piece.getPosition().getFile() + piece.getPosition().getRank());
+					return true;
+				}
+
+			}
+		}
+		return false;
+	}
+
+
 	public Board getCurrentBoard(){
 		return currentBoard;
 	}

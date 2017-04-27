@@ -23,6 +23,7 @@ public abstract class Piece implements Serializable {
 	/**utility  field for  canMove() to test if moves are legal without actually making them
 	 * @author Filip Donskoy*/
 	boolean testMove = false;
+	protected boolean overrideTestMove = false;
 	protected Board board;
 	
 	/**
@@ -69,6 +70,9 @@ public abstract class Piece implements Serializable {
 	 * @return true if move successful, false otherwise
 	*/
 	public abstract TypeOfMove move(Position finish);
-	
-	
+
+	public boolean makeMove() {
+		overrideTestMove = true;
+		return canMove();
+	}
 }

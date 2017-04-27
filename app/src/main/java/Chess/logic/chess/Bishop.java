@@ -101,7 +101,9 @@ public class Bishop extends Piece{
 		Position southEast = this.getPosition().getSouthEast();
 		Position southWest = this.getPosition().getSouthWest();
 
-		testMove = true;
+		if (!overrideTestMove) {
+			testMove = true;
+		}
 		boolean possibleMove = move(northEast) == TypeOfMove.VALID || move(northWest) == TypeOfMove.VALID || move(southEast)  == TypeOfMove.VALID || move(southWest) == TypeOfMove.VALID;
 		testMove = false;
 		return possibleMove;
