@@ -1,32 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="com.example.tim.mobilechessapp12.OppeartionCenter">
+    tools:context="com.example.tim.mobilechessapp12.SavedGames">
 
-    <android.support.design.widget.NavigationView
-        android:id="@+id/nav_view"
+    <Button
+        android:id="@+id/sortTitle"
         android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:layout_gravity="start"
-        android:fitsSystemWindows="true"
-        app:headerLayout="@layout/nav_header_oppeartion_center"
-        app:menu="@menu/activity_oppeartion_center_drawer"/>
+        android:layout_height="wrap_content"
+        android:text="Sort by Title"
+        android:onClick="sortTitle"/>
 
-    <android.support.v7.widget.Toolbar
-        android:id="@+id/my_toolbar"
-        android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        android:background="?attr/colorPrimary"
-        android:elevation="4dp"
-        android:theme="@style/ThemeOverlay.AppCompat.ActionBar" />
+    <Button
+        android:id="@+id/sortDate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Sort by Date"
+        android:onClick="sortDate"/>
+
+    <Button
+        android:id="@+id/replay"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Replay"
+        android:onClick="replay"/>
 
     <ListView
-        android:id="@+id/movies_list"
+        android:id="@+id/savedGames"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="match_parent"
+        />
 </LinearLayout>

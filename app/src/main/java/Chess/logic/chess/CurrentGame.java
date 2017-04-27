@@ -26,7 +26,7 @@ public class CurrentGame implements Serializable{
 	boolean drawDeclared = false;
 	public boolean finished=  false;
 	int currentTurnNum = 0;
-	String dateSaved;
+	public String dateSaved;
 
 		
 	public CurrentGame() throws Exception {
@@ -257,6 +257,7 @@ public class CurrentGame implements Serializable{
 			return;
 		}
 		if (currentTurnNum+1 > listMoves.size()) {
+			currentTurnNum = 0;
 			System.out.println("Reached end of game");
 			return;
 		}
