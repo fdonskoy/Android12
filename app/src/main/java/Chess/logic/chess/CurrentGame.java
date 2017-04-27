@@ -24,7 +24,7 @@ public class CurrentGame implements Serializable{
 	
 	boolean requestedDraw = false;
 	boolean drawDeclared = false;
-	boolean finished=  false;
+	public boolean finished=  false;
 	int currentTurnNum = 0;
 	String dateSaved;
 		

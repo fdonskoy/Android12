@@ -22,7 +22,7 @@ public class Board implements Serializable {
 	public int turnNum;
 	/**stores the kings of both teams to check for checks, mates, and stalemates
 	 * */
-	King blackKing, whiteKing;
+	public King blackKing, whiteKing;
 	
 	/**creates the board and pieces set up in the classic chess starting position
 	 * @throws Exception if invalid position */
