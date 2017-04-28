@@ -80,8 +80,10 @@ public class Knight extends Piece {
 		Position northWest2 = setNorthWest2(pos);
 		Position southWest = setSouthWest(pos);
 		Position southWest2 = setSouthWest2(pos);
-		
-		testMove = true;
+
+		if (!overrideTestMove) {
+			testMove = true;
+		}
 		
 		boolean possibleMove = move(northEast) == TypeOfMove.VALID
 							|| move(northEast2) == TypeOfMove.VALID

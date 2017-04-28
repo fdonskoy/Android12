@@ -106,7 +106,9 @@ public class Rook extends Piece{
 		Position west = this.getPosition().getWest();
 
 
-		testMove = true;
+		if (!overrideTestMove) {
+			testMove = true;
+		}
 		
 		boolean possibleMove = move(north) != TypeOfMove.INVALID || move(south) != TypeOfMove.INVALID || move(east) != TypeOfMove.INVALID || move(west) != TypeOfMove.INVALID;
 		testMove = false;

@@ -35,6 +35,9 @@ public class King extends Piece{
 	 */
 	@Override
 	public TypeOfMove move(Position finish){
+		if (finish == null) {
+			return TypeOfMove.INVALID;
+		}
 		// TODO Auto-generated method stub
 		try {
 			//castle allows the king to move only 2 squares in a file direction
@@ -267,7 +270,44 @@ public class King extends Piece{
 		boolean southWest = !(this.getPosition().getSouthWest() == null || (this.getPosition().getSouthWest().getPiece() != null 	&& this.getPosition().getSouthWest().getPiece().getColor() == this.getColor()	)|| !this.getPosition().getSouthWest().getAttackers(this.getColor()).isEmpty());
 		boolean west = !(this.getPosition().getWest() == null 			|| (this.getPosition().getWest().getPiece() != null			&& this.getPosition().getWest().getPiece().getColor() == this.getColor()		)|| !this.getPosition().getWest().getAttackers(this.getColor()).isEmpty()); 
 		boolean northWest = !(this.getPosition().getNorthWest() == null || (this.getPosition().getNorthWest().getPiece() != null 	&& this.getPosition().getNorthWest().getPiece().getColor() == this.getColor()	)|| !this.getPosition().getNorthWest().getAttackers(this.getColor()).isEmpty());
-				
+
+		if (overrideTestMove) {
+			if (move(this.getPosition().getNorth()) == TypeOfMove.VALID) {
+				return true;
+			}
+			if (move(this.getPosition().getNorthEast()) == TypeOfMove.VALID) {
+				return true;
+			}
+			if (move(this.getPosition().getEast()) == TypeOfMove.VALID) {
+				return true;
+			}
+			if (move(this.getPosition().getSouthEast()) == TypeOfMove.VALID) {
+				return true;
+			}
+			if (move(this.getPosition().getSouth()) == TypeOfMove.VALID) {
+				return true;
+			}
+			if (move(this.getPosition().getSouthWest()) == TypeOfMove.VALID) {
+				return true;
+			}
+			if (move(this.getPosition().getWest()) == TypeOfMove.VALID) {
+				return true;
+			}
+			if (move(this.getPosition().getNorthWest()) == TypeOfMove.VALID) {
+				return true;
+			}
+			if (this.getPosition().getWest() != null && this.getPosition().getWest().getWest() != null) {
+				if (move(this.getPosition().getWest().getWest()) == TypeOfMove.CASTLE_LEFT) {
+					return true;
+				}
+			}
+			if (this.getPosition().getEast() != null && this.getPosition().getEast().getEast() != null) {
+				if (move(this.getPosition().getEast().getEast()) == TypeOfMove.CASTLE_RIGHT) {
+					return true;
+				}
+			}
+			return false;
+		}
 		return 	north || northEast || east || southEast || south || southWest || west || northWest;
 	}
 

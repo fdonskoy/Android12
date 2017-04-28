@@ -1,7 +1,6 @@
 package com.example.tim.mobilechessapp12;
 
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -17,8 +16,8 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.util.Log;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.GridLayout;
@@ -26,45 +25,45 @@ import android.widget.ImageButton;
 import android.content.res.Resources;
 import android.widget.ListView;
 import android.widget.Toast;
-import android.graphics.drawable.Drawable;
+
+import org.w3c.dom.Text;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
-
+import Chess.logic.chess.Board;
 import Chess.logic.chess.Color;
 import Chess.logic.chess.CurrentGame;
 import Chess.logic.chess.TypeOfMove;
 
-public class OppeartionCenter extends AppCompatActivity
+public class ReplayCenter extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
     public static String firstSelected = null;
     public static String secondSelected = null;
     public static ImageButton firstSelectedTile;
     public static ImageButton secondSelectedTile;
-    public static Drawable firstSelectedColor;
-    public static Drawable secondSelectedColor;
-
 
     public static GridLayout currentBoardDisplay;
     public static Resources resources;
 
     public static CurrentGame currentGame;
+    private CurrentGame replay;
+    public static String loadGame = null;
+    GridLayout grid = null;
+
+    int place = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_oppeartion_center);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setContentView(R.layout.replay);
+        /*Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -77,30 +76,26 @@ public class OppeartionCenter extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
 
         //Button resign = (Button)findViewById(R.id.resign);
-
-
-
-        try {
-            if (!readIt("data.dat")) {
-                currentGame = new CurrentGame();
-            }
-            //Kid's Mate exists but is finished, so it was rejected when it was read as the currentGame
-            /*if (!readIt("Kid's Mate")) {
-                Toast.makeText(getApplicationContext(), "Didn't find Kid's Mate", Toast.LENGTH_LONG).show();
-                currentGame = new CurrentGame();
-            }
-            else {
-                Toast.makeText(getApplicationContext(), "State of finished in Kid's Mate is " + currentGame.finished, Toast.LENGTH_LONG).show();
-            }*/
-        }
-        catch (Exception e) {
-            return;
-        }
-
+*/
+        Toast.makeText(getApplicationContext(), "Game selected: " + loadGame, Toast.LENGTH_LONG).show();
+        AutoCompleteTextView t = (AutoCompleteTextView) findViewById(R.id.autoCompleteTextView);
+        loadGame = loadGame.trim();
+        t.setText(loadGame);
+        t.setEnabled(false);
 
         resources = getResources();
         try {
             initializeBoard();
+            if (!readIt(loadGame)) {
+                Toast.makeText(getApplicationContext(), "Couldn't load " + loadGame, Toast.LENGTH_LONG).show();
+            }
+            else {
+                Toast.makeText(getApplicationContext(), "Loaded " + loadGame, Toast.LENGTH_LONG).show();
+                replay = new CurrentGame();
+                replay = currentGame;
+                replay.currentBoard = new Board();
+            }
+            grid = (GridLayout) findViewById(R.id.chessBoard);
         }
         catch (Exception e) {
             return;
@@ -108,69 +103,7 @@ public class OppeartionCenter extends AppCompatActivity
 
     }
 
-    public void resign(View v) {
-        //Toast.makeText(getApplicationContext(), "Hey we resigned so well", Toast.LENGTH_LONG).show();
-        if (currentGame.finished) {
-            return;
-        }
-        if (currentGame.currentBoard.turn.equals(Color.White)) {
-            Toast.makeText(getApplicationContext(), "White resigned. Black wins!", Toast.LENGTH_LONG).show();
-        }
-        if (currentGame.currentBoard.turn.equals(Color.Black)) {
-            Toast.makeText(getApplicationContext(), "Black resigned. White wins!", Toast.LENGTH_LONG).show();
-        }
-        currentGame.resign();
-        saveGameTitleOrNah();
-
-    }
-
-    public void randomMove(View v) {
-        if (currentGame.finished) {
-            return;
-        }
-        Boolean made = false;
-        made = currentGame.makeAImove();
-        if (made) {
-            Toast.makeText(getApplicationContext(), "AI generated", Toast.LENGTH_SHORT).show();
-            redrawBoard();
-        }
-        else {
-            Toast.makeText(getApplicationContext(), "Failed to generate AI", Toast.LENGTH_SHORT).show();
-        }
-
-    }
-    //need to put in prompt for accept draw
-    public void draw(View v) {
-        if (currentGame.finished) {
-            return;
-        }
-        new AlertDialog.Builder(this)
-        .setTitle("Title")
-                .setMessage("Draw requested. Accept?")
-                .setIcon(android.R.drawable.ic_dialog_alert)
-                .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int whichButton) {
-                        currentGame.draw();
-                        Toast.makeText(getApplicationContext(), "draw", Toast.LENGTH_LONG).show();
-                        saveGameTitleOrNah();
-                    }})
-                .setNegativeButton(android.R.string.no, null).show();
-    }
-
-    public void undoMove(View v) throws Exception {
-        if (currentGame.finished) {
-            return;
-        }
-        if (readIt("Undo.dat")){
-            Toast.makeText(getApplicationContext(), "Move undone", Toast.LENGTH_SHORT).show();
-            redrawBoard();
-        }
-        else {
-            Toast.makeText(getApplicationContext(), "Can't undo!", Toast.LENGTH_SHORT).show();
-        }
-    }
-
-
+    /*
     @Override
     public void onBackPressed() {
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -179,7 +112,7 @@ public class OppeartionCenter extends AppCompatActivity
         } else {
             super.onBackPressed();
         }
-    }
+    }*/
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -211,31 +144,12 @@ public class OppeartionCenter extends AppCompatActivity
 
         if (id == R.id.new_game_btn) {
             Log.d("My APP", "new game");
-            if (currentGame.currentBoard.turnNum != 1) {
-                saveGameTitleOrNah();
-            }
-            DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-            drawer.closeDrawer(GravityCompat.START);
         } else if (id == R.id.old_game_btn) {
             Log.d("My APP", "old games");
-            try {
-                writeIt("data.dat");
-                Toast.makeText(getApplicationContext(), "Clicked Nav item", Toast.LENGTH_SHORT).show();
-
-                Intent intent = new Intent(this, SavedGames.class);
-                startActivity(intent);
-
-            }
-            catch (Exception e) {
-                return false;
-            }
-
         }
 
         //DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         //drawer.closeDrawer(GravityCompat.START);
-
-
         return true;
     }
 
@@ -253,27 +167,16 @@ public class OppeartionCenter extends AppCompatActivity
                     if (OppeartionCenter.firstSelected == null) {
                         OppeartionCenter.firstSelectedTile = (ImageButton) v;
                         OppeartionCenter.firstSelected = getResources().getResourceEntryName(v.getId());
-
-                        OppeartionCenter.firstSelectedColor = OppeartionCenter.firstSelectedTile.getBackground();
-                        OppeartionCenter.firstSelectedTile.setBackground(getResources().getDrawable(R.drawable.bluish));
                     } else if (OppeartionCenter.firstSelected != null) {
                         OppeartionCenter.secondSelectedTile = (ImageButton) v;
                         OppeartionCenter.secondSelected = getResources().getResourceEntryName(v.getId());
 
-                        OppeartionCenter.secondSelectedColor = OppeartionCenter.secondSelectedTile.getBackground();
-                        OppeartionCenter.secondSelectedTile.setBackground(getResources().getDrawable(R.drawable.bluish));
-
                         makeMove();
-
-                        OppeartionCenter.firstSelectedTile.setBackground(OppeartionCenter.firstSelectedColor);
-                        OppeartionCenter.secondSelectedTile.setBackground(OppeartionCenter.secondSelectedColor);
 
                         OppeartionCenter.firstSelectedTile = null;
                         OppeartionCenter.secondSelectedTile = null;
                         OppeartionCenter.firstSelected = null;
                         OppeartionCenter.secondSelected = null;
-                        OppeartionCenter.firstSelectedColor = null;
-                        OppeartionCenter.secondSelectedColor = null;
                     } else if (firstSelected.equals(getResources().getResourceEntryName(v.getId()))) {
                         OppeartionCenter.firstSelectedTile = null;
                         OppeartionCenter.secondSelectedTile = null;
@@ -283,6 +186,80 @@ public class OppeartionCenter extends AppCompatActivity
                     System.out.println("done");
                 }
             });
+
+            /*String id = getResources().getResourceEntryName(currentSquare.getId());
+            switch(id){
+                case "a1":
+                case "h1":
+                    currentSquare.setImageResource(R.drawable.white_rook);
+                    currentSquare.setTag(R.drawable.white_rook);
+                    break;
+                case "b1":
+                case "g1":
+                    currentSquare.setImageResource(R.drawable.white_knight);
+                    currentSquare.setTag(R.drawable.white_knight);
+                    break;
+                case "c1":
+                case "f1":
+                    currentSquare.setImageResource(R.drawable.white_bishop);
+                    currentSquare.setTag(R.drawable.white_bishop);
+                    break;
+                case "d1":
+                    currentSquare.setImageResource(R.drawable.white_queen);
+                    currentSquare.setTag(R.drawable.white_queen);
+                    break;
+                case "e1":
+                    currentSquare.setImageResource(R.drawable.white_king);
+                    currentSquare.setTag(R.drawable.white_king);
+                    break;
+                case "a2":
+                case "b2":
+                case "c2":
+                case "d2":
+                case "e2":
+                case "f2":
+                case "g2":
+                case "h2":
+                    currentSquare.setImageResource(R.drawable.white_pawn);
+                    currentSquare.setTag(R.drawable.white_pawn);
+                    break;
+                case "a7":
+                case "b7":
+                case "c7":
+                case "d7":
+                case "e7":
+                case "f7":
+                case "g7":
+                case "h7":
+                    currentSquare.setImageResource(R.drawable.black_pawn);
+                    currentSquare.setTag(R.drawable.black_pawn);
+                    break;
+                case "a8":
+                case "h8":
+                    currentSquare.setImageResource(R.drawable.black_rook);
+                    currentSquare.setTag(R.drawable.black_rook);
+                    break;
+                case "b8":
+                case "g8":
+                    currentSquare.setImageResource(R.drawable.black_knight);
+                    currentSquare.setTag(R.drawable.black_knight);
+                    break;
+                case "c8":
+                case "f8":
+                    currentSquare.setImageResource(R.drawable.black_bishop);
+                    currentSquare.setTag(R.drawable.black_bishop);
+                    break;
+                case "d8":
+                    currentSquare.setImageResource(R.drawable.black_queen);
+                    currentSquare.setTag(R.drawable.black_queen);
+                    break;
+                case "e8":
+                    currentSquare.setImageResource(R.drawable.black_king);
+                    currentSquare.setTag(R.drawable.black_king);
+                    break;
+                default:
+                    break;
+            }*/
         }
 
 
@@ -291,93 +268,38 @@ public class OppeartionCenter extends AppCompatActivity
 
 
     public void makeMove(){
-        if (currentGame.finished) {
-            return;
-        }
         try{
+            replay.listMoves.get(place).substring(0,2);
+            replay.listMoves.get(place).substring(3,5);
+            //Toast.makeText(getApplicationContext(), "Extracted " + replay.listMoves.get(place).substring(0,2) + " and " + replay.listMoves.get(place).substring(3,5), Toast.LENGTH_SHORT).show();
+            firstSelectedTile = findTile(replay.listMoves.get(place).substring(0,2));
+            secondSelectedTile = findTile(replay.listMoves.get(place).substring(3,5));
 
-            Boolean x = writeIt("Undo.dat");
-            TypeOfMove madeMove = currentGame.makeMove(firstSelected + " " + secondSelected);
+            secondSelectedTile.setImageResource((Integer)firstSelectedTile.getTag());
+            secondSelectedTile.setTag(firstSelectedTile.getTag());
 
-            if(madeMove == TypeOfMove.VALID){
-                secondSelectedTile.setImageResource((Integer)firstSelectedTile.getTag());
-                secondSelectedTile.setTag(firstSelectedTile.getTag());
+            firstSelectedTile.setImageResource(android.R.color.transparent);
+            firstSelectedTile.setTag(android.R.color.transparent);
 
-                firstSelectedTile.setImageResource(android.R.color.transparent);
-                firstSelectedTile.setTag(android.R.color.transparent);
-            } else if(madeMove == TypeOfMove.EN_PASSANT || madeMove == TypeOfMove.PROMOTION || madeMove == TypeOfMove.CASTLE_LEFT || madeMove == TypeOfMove.CASTLE_RIGHT){// redraw 2 files
-                redrawBoard();
-            }
-            else if (madeMove == TypeOfMove.INVALID) {
-                Toast.makeText(getApplicationContext(), "Illegal move", Toast.LENGTH_SHORT).show();
-            }
-            if (currentGame.currentBoard.whiteKing.checkmate() ) {
-                Toast.makeText(getApplicationContext(), "Checkmate! Black wins!", Toast.LENGTH_LONG).show();
-                saveGameTitleOrNah();
-            }
-            if (currentGame.currentBoard.blackKing.checkmate()) {
-                Toast.makeText(getApplicationContext(), "Checkmate! White wins!", Toast.LENGTH_LONG).show();
-                saveGameTitleOrNah();
-            }
-
-            Boolean t = writeIt("data.dat");
-
-
-            //currentGame.writeGame("currentGame");
         }catch(Exception e){
             Log.e("AppCompatActivity",Log.getStackTraceString(e));
             return;
         }
     }
 
-    private void saveGameTitleOrNah() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Enter a title to save the game");
+    private ImageButton findTile(String tileID){
 
-        // Set up the input
-        final EditText input = new EditText(this);
-        // Specify the type of input expected; this, for example, sets the input as a password, and will mask the text
-        input.setInputType(InputType.TYPE_TEXT_VARIATION_NORMAL);
-        builder.setView(input);
-
-        // Set up the buttons
-        builder.setPositiveButton("Save", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                final String m_Text = input.getText().toString();
-                try {
-                    Toast.makeText(getApplicationContext(), "Saved " + m_Text , Toast.LENGTH_SHORT).show();
-                    currentGame.finished = true;
-                    if (writeIt(m_Text)) {
-                        currentGame = new CurrentGame();
-                        redrawBoard();
-                    }
-                    else {
-                        Toast.makeText(getApplicationContext(), "Failed to write finished game " + m_Text , Toast.LENGTH_SHORT).show();
-                    }
-                }
-                catch (Exception e) {
-                    Toast.makeText(getApplicationContext(), "Failed to save", Toast.LENGTH_SHORT).show();
-                    return;
-                }
+        ImageButton z = null;
+        for(int i=0; i< grid.getChildCount(); i++) {
+            ImageButton child = (ImageButton)grid.getChildAt(i);
+            if (getResources().getResourceEntryName(child.getId()).equals(tileID)){
+                z = child;
             }
-        });
-        builder.setNegativeButton("Cancel and Start New Game", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                try {
-                    currentGame = new CurrentGame();
-                    redrawBoard();
-                }
-                catch (Exception e) {
-                    Toast.makeText(getApplicationContext(), "Failed to restart new game", Toast.LENGTH_SHORT).show();
-                }
-                dialog.cancel();
-            }
-        });
+        }
 
-        builder.show();
+        return z;
     }
+
 
     public static void redrawBoard(){
         for(int i = 0; i < currentBoardDisplay.getChildCount(); i++){
@@ -460,34 +382,47 @@ public class OppeartionCenter extends AppCompatActivity
         currentGame = (CurrentGame)oi.readObject();
         oi.close();
         fi.close();
-        if (currentGame.finished){
-            return false;
-        }
+
         return true;
     }
 
-    private boolean writeIt(String title) throws Exception{
-        File file = new File(getApplicationContext().getFilesDir(), title);
-
-        try {
-            FileOutputStream fileOut =
-                    new FileOutputStream(file);
-            ObjectOutputStream out = new ObjectOutputStream(fileOut);
-
-            DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
-            Date date = new Date();
-            currentGame.dateSaved = dateFormat.format(date);
-
-            out.writeObject(currentGame);
-            out.close();
-            fileOut.close();
-
-
-            //Toast.makeText(getApplicationContext(), "test saved", Toast.LENGTH_LONG).show();
-            return true;
-        } catch (Exception e) {
-            e.printStackTrace();
-            return false;
+    public void nextMove(View v) throws Exception{
+        if (place > replay.listMoves.size() -1 ) {
+            place = 0;
+            initializeBoard();
+            return;
         }
+
+        if (place == replay.listMoves.size()-1){
+            String last = replay.listMoves.get(place);
+            if (last.equals("resign")) {
+                if (currentGame.currentBoard.turn.equals(Color.Black)) {
+                    Toast.makeText(getApplicationContext(), "White Resigned. Black wins!", Toast.LENGTH_SHORT).show();
+                }
+                else {
+                    Toast.makeText(getApplicationContext(), "Black Resigned. White wins!", Toast.LENGTH_SHORT).show();
+                }
+                place++;
+                return;
+            }
+            else if (last.equals("draw")) {
+                Toast.makeText(getApplicationContext(), "Draw was accepted", Toast.LENGTH_SHORT).show();
+                place++;
+                return;
+            }
+            else if (currentGame.currentBoard.whiteKing.checkmate() ) {
+                Toast.makeText(getApplicationContext(), "Checkmate! Black wins!", Toast.LENGTH_SHORT).show();
+            }
+            else if (currentGame.currentBoard.blackKing.checkmate()) {
+                Toast.makeText(getApplicationContext(), "Checkmate! White wins!", Toast.LENGTH_SHORT).show();
+            }
+            makeMove();
+            place++;
+            return;
+        }
+        makeMove();
+        //Toast.makeText(getApplicationContext(), replay.listMoves.get(place), Toast.LENGTH_SHORT).show();
+        place++;
     }
+
 }

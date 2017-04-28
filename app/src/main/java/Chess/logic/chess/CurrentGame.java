@@ -1,5 +1,8 @@
 package Chess.logic.chess;
 
+import android.support.v7.app.AppCompatActivity;
+import android.content.Context;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -18,12 +21,13 @@ public class CurrentGame implements Serializable{
 	
 	static String toFrom[] = new String[3];
 	public Board currentBoard;
-	
+
 	boolean requestedDraw = false;
 	boolean drawDeclared = false;
-	boolean finished=  false;
+	public boolean finished=  false;
 	int currentTurnNum = 0;
-	String dateSaved;
+	public String dateSaved;
+
 		
 	public CurrentGame() throws Exception {
 		currentBoard = new Board();
@@ -120,6 +124,9 @@ public class CurrentGame implements Serializable{
 					System.out.println("Illegal move, try again\n");
 					return TypeOfMove.INVALID;
 				}
+
+
+
 				System.out.println("\n" + currentBoard);
 				
 				
@@ -133,6 +140,8 @@ public class CurrentGame implements Serializable{
 				if (!finished) {
 					listMoves.add(from + " " + to);
 				}
+
+
 				
 			}
 			catch (Exception e) {
@@ -221,11 +230,12 @@ public class CurrentGame implements Serializable{
 	}
 	
 	public void writeGame(String title) throws IOException {
-		File f = new File("src/savedGames" + File.separator + title);
+
+		File f = new File("src/main/java/Chess/logic/chess/savedGames" + File.separator + title + ".ser");
 		if(!f.exists())
 		    f.createNewFile();
 		ObjectOutputStream oos = new ObjectOutputStream(
-									new FileOutputStream("src/savedGames" + File.separator + title));
+									new FileOutputStream("src/main/java/Chess/logic/chess/savedGames" + File.separator + title + ".ser"));
 		oos.writeObject(this);
 		oos.close(); 
 		DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
@@ -235,7 +245,7 @@ public class CurrentGame implements Serializable{
 	} 
 	
 	public CurrentGame readGame (String title) throws IOException, Exception, ClassNotFoundException {
-		ObjectInputStream ois = new ObjectInputStream(new FileInputStream("src/savedGames" + File.separator + title));
+		ObjectInputStream ois = new ObjectInputStream(new FileInputStream("src/main/java/Chess/logic/chess/savedGames" + File.separator + title + ".ser"));
 		CurrentGame user = (CurrentGame)ois.readObject();
 		ois.close();
 		return user;
@@ -247,6 +257,7 @@ public class CurrentGame implements Serializable{
 			return;
 		}
 		if (currentTurnNum+1 > listMoves.size()) {
+			currentTurnNum = 0;
 			System.out.println("Reached end of game");
 			return;
 		}
@@ -257,7 +268,48 @@ public class CurrentGame implements Serializable{
 		makeMove(listMoves.get(currentTurnNum));
 		currentTurnNum++;
 		
-	} 
+	}
+
+
+	public void resign() {
+		listMoves.add("resign");
+		gameOver();
+	}
+
+	public void draw() {
+		listMoves.add("draw");
+		drawDeclared = true;
+		gameOver();
+	}
+
+	public boolean makeAImove() {
+		Position start = null;
+		if (currentBoard.turn == Color.White) {
+			for(Piece piece : currentBoard.whiteKing.team){
+				start = piece.getPosition();
+				if (piece.makeMove()) {
+					System.out.println(currentBoard);
+					piece.overrideTestMove = false;
+					listMoves.add("" + start.getFile() + start.getRank() + " " + piece.getPosition().getFile() + piece.getPosition().getRank());
+					return true;
+				}
+			}
+		}
+		else {
+			for(Piece piece : currentBoard.blackKing.team){
+				start = piece.getPosition();
+				if (piece.makeMove()) {
+					System.out.println(currentBoard);
+					piece.overrideTestMove = false;
+					listMoves.add("" + start.getFile() + start.getRank() + " " + piece.getPosition().getFile() + piece.getPosition().getRank());
+					return true;
+				}
+
+			}
+		}
+		return false;
+	}
+
 
 	public Board getCurrentBoard(){
 		return currentBoard;
