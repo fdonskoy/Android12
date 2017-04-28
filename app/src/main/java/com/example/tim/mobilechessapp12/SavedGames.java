@@ -49,6 +49,7 @@ public class SavedGames extends AppCompatActivity
 
     public static CurrentGame currentGame;
     private List<String> myList = null;
+    private String game = null;
 
     boolean sortTitleASC, sortTitleDESC, sortDateASC, sortDateDESC = false;
 
@@ -70,6 +71,7 @@ public class SavedGames extends AppCompatActivity
 
         //Button resign = (Button)findViewById(R.id.resign);
 */
+        game = null;
         try {
             ListView lv = (ListView) findViewById(R.id.savedGames);
             List<String> your_array_list = savedGamesStringView();
@@ -85,7 +87,15 @@ public class SavedGames extends AppCompatActivity
             Toast.makeText(getApplicationContext(), "Failed to load list", Toast.LENGTH_LONG).show();
         }
 
-
+        final ListView lv = (ListView) findViewById(R.id.savedGames);
+        lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            public void onItemClick(AdapterView<?> myAdapter, View myView, int myItemInt, long mylng) {
+                String text =(String) (lv.getItemAtPosition(myItemInt));
+                text = text.substring(0, text.lastIndexOf("| Date:"));
+                game = text;
+                Toast.makeText(getApplicationContext(), text, Toast.LENGTH_SHORT).show();
+            }
+        });
 
     }
 
@@ -187,20 +197,12 @@ public class SavedGames extends AppCompatActivity
         return arrayListView;
     }
 
-    public void listClick(View v) {
-        final ListView lv = (ListView) findViewById(R.id.savedGames);
-        lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            public void onItemClick(AdapterView<?> myAdapter, View myView, int myItemInt, long mylng) {
-                String text =(String) (lv.getItemAtPosition(myItemInt));
-                Toast.makeText(getApplicationContext(), text, Toast.LENGTH_LONG).show();
-                setContentView(R.layout.replay);
 
-
-            }
-        });
-    }
     public void replay(View v) {
-
+        if (game == null) {
+            return;
+        }
+        ReplayCenter.loadGame = game;
         Intent intent = new Intent(this, ReplayCenter.class);
         startActivity(intent);
         //setContentView(R.layout.replay);

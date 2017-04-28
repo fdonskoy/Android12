@@ -541,9 +541,17 @@
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="19dp"
-        android:onClick="resign"
+        android:onClick="nextMove"
         android:text="Next Move"
         tools:layout_editor_absoluteX="222dp"
         tools:layout_editor_absoluteY="431dp" />
+
+    <AutoCompleteTextView
+        android:id="@+id/autoCompleteTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="24dp" />
 
 </RelativeLayout>
