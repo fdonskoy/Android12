@@ -83,7 +83,12 @@ public class OppeartionCenter extends AppCompatActivity
 
         try {
             if (!readIt("data.dat")) {
+                Toast.makeText(getApplicationContext(), "Didn't find current game OR game was finished", Toast.LENGTH_SHORT).show();
                 currentGame = new CurrentGame();
+            }
+            else {
+                //it goes on to initialize the board from scratch anyway after the getresources line
+                Toast.makeText(getApplicationContext(), "Found current game", Toast.LENGTH_SHORT).show();
             }
             //Kid's Mate exists but is finished, so it was rejected when it was read as the currentGame
             /*if (!readIt("Kid's Mate")) {
