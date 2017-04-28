@@ -26,6 +26,7 @@ import android.widget.ImageButton;
 import android.content.res.Resources;
 import android.widget.ListView;
 import android.widget.Toast;
+import android.graphics.drawable.Drawable;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -38,6 +39,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+
 import Chess.logic.chess.Color;
 import Chess.logic.chess.CurrentGame;
 import Chess.logic.chess.TypeOfMove;
@@ -49,6 +51,9 @@ public class OppeartionCenter extends AppCompatActivity
     public static String secondSelected = null;
     public static ImageButton firstSelectedTile;
     public static ImageButton secondSelectedTile;
+    public static Drawable firstSelectedColor;
+    public static Drawable secondSelectedColor;
+
 
     public static GridLayout currentBoardDisplay;
     public static Resources resources;
@@ -248,16 +253,27 @@ public class OppeartionCenter extends AppCompatActivity
                     if (OppeartionCenter.firstSelected == null) {
                         OppeartionCenter.firstSelectedTile = (ImageButton) v;
                         OppeartionCenter.firstSelected = getResources().getResourceEntryName(v.getId());
+
+                        OppeartionCenter.firstSelectedColor = OppeartionCenter.firstSelectedTile.getBackground();
+                        OppeartionCenter.firstSelectedTile.setBackground(getResources().getDrawable(R.drawable.bluish));
                     } else if (OppeartionCenter.firstSelected != null) {
                         OppeartionCenter.secondSelectedTile = (ImageButton) v;
                         OppeartionCenter.secondSelected = getResources().getResourceEntryName(v.getId());
 
+                        OppeartionCenter.secondSelectedColor = OppeartionCenter.secondSelectedTile.getBackground();
+                        OppeartionCenter.secondSelectedTile.setBackground(getResources().getDrawable(R.drawable.bluish));
+
                         makeMove();
+
+                        OppeartionCenter.firstSelectedTile.setBackground(OppeartionCenter.firstSelectedColor);
+                        OppeartionCenter.secondSelectedTile.setBackground(OppeartionCenter.secondSelectedColor);
 
                         OppeartionCenter.firstSelectedTile = null;
                         OppeartionCenter.secondSelectedTile = null;
                         OppeartionCenter.firstSelected = null;
                         OppeartionCenter.secondSelected = null;
+                        OppeartionCenter.firstSelectedColor = null;
+                        OppeartionCenter.secondSelectedColor = null;
                     } else if (firstSelected.equals(getResources().getResourceEntryName(v.getId()))) {
                         OppeartionCenter.firstSelectedTile = null;
                         OppeartionCenter.secondSelectedTile = null;
@@ -267,80 +283,6 @@ public class OppeartionCenter extends AppCompatActivity
                     System.out.println("done");
                 }
             });
-
-            /*String id = getResources().getResourceEntryName(currentSquare.getId());
-            switch(id){
-                case "a1":
-                case "h1":
-                    currentSquare.setImageResource(R.drawable.white_rook);
-                    currentSquare.setTag(R.drawable.white_rook);
-                    break;
-                case "b1":
-                case "g1":
-                    currentSquare.setImageResource(R.drawable.white_knight);
-                    currentSquare.setTag(R.drawable.white_knight);
-                    break;
-                case "c1":
-                case "f1":
-                    currentSquare.setImageResource(R.drawable.white_bishop);
-                    currentSquare.setTag(R.drawable.white_bishop);
-                    break;
-                case "d1":
-                    currentSquare.setImageResource(R.drawable.white_queen);
-                    currentSquare.setTag(R.drawable.white_queen);
-                    break;
-                case "e1":
-                    currentSquare.setImageResource(R.drawable.white_king);
-                    currentSquare.setTag(R.drawable.white_king);
-                    break;
-                case "a2":
-                case "b2":
-                case "c2":
-                case "d2":
-                case "e2":
-                case "f2":
-                case "g2":
-                case "h2":
-                    currentSquare.setImageResource(R.drawable.white_pawn);
-                    currentSquare.setTag(R.drawable.white_pawn);
-                    break;
-                case "a7":
-                case "b7":
-                case "c7":
-                case "d7":
-                case "e7":
-                case "f7":
-                case "g7":
-                case "h7":
-                    currentSquare.setImageResource(R.drawable.black_pawn);
-                    currentSquare.setTag(R.drawable.black_pawn);
-                    break;
-                case "a8":
-                case "h8":
-                    currentSquare.setImageResource(R.drawable.black_rook);
-                    currentSquare.setTag(R.drawable.black_rook);
-                    break;
-                case "b8":
-                case "g8":
-                    currentSquare.setImageResource(R.drawable.black_knight);
-                    currentSquare.setTag(R.drawable.black_knight);
-                    break;
-                case "c8":
-                case "f8":
-                    currentSquare.setImageResource(R.drawable.black_bishop);
-                    currentSquare.setTag(R.drawable.black_bishop);
-                    break;
-                case "d8":
-                    currentSquare.setImageResource(R.drawable.black_queen);
-                    currentSquare.setTag(R.drawable.black_queen);
-                    break;
-                case "e8":
-                    currentSquare.setImageResource(R.drawable.black_king);
-                    currentSquare.setTag(R.drawable.black_king);
-                    break;
-                default:
-                    break;
-            }*/
         }
 
 
