@@ -402,10 +402,12 @@ public class ReplayCenter extends AppCompatActivity
                 else {
                     Toast.makeText(getApplicationContext(), "Black Resigned. White wins!", Toast.LENGTH_SHORT).show();
                 }
+                place++;
                 return;
             }
             else if (last.equals("draw")) {
                 Toast.makeText(getApplicationContext(), "Draw was accepted", Toast.LENGTH_SHORT).show();
+                place++;
                 return;
             }
             else if (currentGame.currentBoard.whiteKing.checkmate() ) {
