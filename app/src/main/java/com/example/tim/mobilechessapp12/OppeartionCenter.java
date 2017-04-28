@@ -366,6 +366,9 @@ public class OppeartionCenter extends AppCompatActivity
             } else if(madeMove == TypeOfMove.EN_PASSANT || madeMove == TypeOfMove.PROMOTION || madeMove == TypeOfMove.CASTLE_LEFT || madeMove == TypeOfMove.CASTLE_RIGHT){// redraw 2 files
                 redrawBoard();
             }
+            else if (madeMove == TypeOfMove.INVALID) {
+                Toast.makeText(getApplicationContext(), "Illegal move", Toast.LENGTH_SHORT).show();
+            }
             if (currentGame.currentBoard.whiteKing.checkmate() ) {
                 Toast.makeText(getApplicationContext(), "Checkmate! Black wins!", Toast.LENGTH_LONG).show();
                 saveGameTitleOrNah();
