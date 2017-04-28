@@ -66,6 +66,8 @@ public class Board implements Serializable {
 		}
 		
 		whiteKing = new King(board[0][4], Color.White, this);
+        board[0][4].setPiece(whiteKing);
+        whiteKing.team.add(whiteKing);
 		board[0][0].setPiece(new Rook(board[0][0], Color.White, whiteKing, this));
 		whiteKing.team.add(board[0][0].getPiece());
 		board[0][1].setPiece(new Knight(board[0][1], Color.White, whiteKing, this));
@@ -74,7 +76,7 @@ public class Board implements Serializable {
 		whiteKing.team.add(board[0][2].getPiece());
 		board[0][3].setPiece(new Queen(board[0][3], Color.White, whiteKing, this));
 		whiteKing.team.add(board[0][3].getPiece());
-		board[0][4].setPiece(whiteKing);
+
 
 		board[0][5].setPiece(new Bishop(board[0][5], Color.White, whiteKing, this));
 		whiteKing.team.add(board[0][5].getPiece());
@@ -85,7 +87,9 @@ public class Board implements Serializable {
 		
 		
 		blackKing = new King(board[7][4], Color.Black, this);
-		board[7][0].setPiece(new Rook(board[7][0], Color.Black, blackKing, this));
+        board[7][4].setPiece(blackKing);
+        blackKing.team.add(blackKing);
+        board[7][0].setPiece(new Rook(board[7][0], Color.Black, blackKing, this));
 		blackKing.team.add(board[7][0].getPiece());
 		board[7][1].setPiece(new Knight(board[7][1], Color.Black, blackKing, this));
 		blackKing.team.add(board[7][1].getPiece());
@@ -93,8 +97,7 @@ public class Board implements Serializable {
 		blackKing.team.add(board[7][2].getPiece());
 		board[7][3].setPiece(new Queen(board[7][3], Color.Black, blackKing, this));
 		blackKing.team.add(board[7][3].getPiece());
-		board[7][4].setPiece(blackKing);
-		
+
 		board[7][5].setPiece(new Bishop(board[7][5], Color.Black, blackKing, this));
 		blackKing.team.add(board[7][5].getPiece());
 		board[7][6].setPiece(new Knight(board[7][6], Color.Black, blackKing, this));
