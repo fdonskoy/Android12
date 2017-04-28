@@ -100,6 +100,7 @@ public class OppeartionCenter extends AppCompatActivity
             }*/
         }
         catch (Exception e) {
+            Toast.makeText(getApplicationContext(), "Something Broke in checking for last game", Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -131,17 +132,21 @@ public class OppeartionCenter extends AppCompatActivity
     }
 
     public void randomMove(View v) {
-        if (currentGame.finished) {
-            return;
+        try {
+            if (currentGame.finished) {
+                return;
+            }
+            Boolean made = false;
+            made = currentGame.makeAImove();
+            if (made) {
+                Toast.makeText(getApplicationContext(), "Random move generated", Toast.LENGTH_SHORT).show();
+                redrawBoard();
+                writeIt("data.dat");
+                Toast.makeText(getApplicationContext(), "Failed to generate a random move", Toast.LENGTH_SHORT).show();
+            }
         }
-        Boolean made = false;
-        made = currentGame.makeAImove();
-        if (made) {
-            Toast.makeText(getApplicationContext(), "Random move generated", Toast.LENGTH_SHORT).show();
-            redrawBoard();
-        }
-        else {
-            Toast.makeText(getApplicationContext(), "Failed to generate a random move", Toast.LENGTH_SHORT).show();
+        catch (Exception e){
+            Toast.makeText(getApplicationContext(), "Failed to Record Random Move", Toast.LENGTH_SHORT).show();
         }
 
     }
@@ -216,14 +221,12 @@ public class OppeartionCenter extends AppCompatActivity
         int id = item.getItemId();
 
         if (id == R.id.new_game_btn) {
-            Log.d("My APP", "new game");
             if (currentGame.currentBoard.turnNum != 1) {
                 saveGameTitleOrNah();
             }
             DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
             drawer.closeDrawer(GravityCompat.START);
         } else if (id == R.id.old_game_btn) {
-            Log.d("My APP", "old games");
             try {
                 writeIt("data.dat");
                 Toast.makeText(getApplicationContext(), "Clicked Nav item", Toast.LENGTH_SHORT).show();
@@ -240,15 +243,12 @@ public class OppeartionCenter extends AppCompatActivity
 
         //DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         //drawer.closeDrawer(GravityCompat.START);
-
-
         return true;
     }
 
 
 
     public void initializeBoard() throws Exception{
-        currentGame = new CurrentGame();
         GridLayout board = (GridLayout) findViewById(R.id.chessBoard);
         currentBoardDisplay = board;
         //add an onClick to every square
@@ -286,7 +286,6 @@ public class OppeartionCenter extends AppCompatActivity
                         OppeartionCenter.firstSelected = null;
                         OppeartionCenter.secondSelected = null;
                     }
-                    System.out.println("done");
                 }
             });
         }
@@ -298,6 +297,7 @@ public class OppeartionCenter extends AppCompatActivity
 
     public void makeMove(){
         if (currentGame.finished) {
+            Toast.makeText(getApplicationContext(), "Current Game is already finished", Toast.LENGTH_SHORT).show();
             return;
         }
         try{
@@ -327,8 +327,9 @@ public class OppeartionCenter extends AppCompatActivity
             }
 
             Boolean t = writeIt("data.dat");
-
-
+            if(!t){
+                Toast.makeText(getApplicationContext(), "Saving Move Failed", Toast.LENGTH_SHORT).show();
+            }
             //currentGame.writeGame("currentGame");
         }catch(Exception e){
             Log.e("AppCompatActivity",Log.getStackTraceString(e));
@@ -476,8 +477,7 @@ public class OppeartionCenter extends AppCompatActivity
         File file = new File(getApplicationContext().getFilesDir(), title);
 
         try {
-            FileOutputStream fileOut =
-                    new FileOutputStream(file);
+            FileOutputStream fileOut = new FileOutputStream(file);
             ObjectOutputStream out = new ObjectOutputStream(fileOut);
 
             DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
