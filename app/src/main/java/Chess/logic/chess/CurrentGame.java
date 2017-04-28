@@ -13,6 +13,7 @@ import java.io.Serializable;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 
 public class CurrentGame implements Serializable{
@@ -285,6 +286,7 @@ public class CurrentGame implements Serializable{
 	public boolean makeAImove() {
 		Position start = null;
 		if (currentBoard.turn == Color.White) {
+			Collections.shuffle(currentBoard.whiteKing.team);
 			for(Piece piece : currentBoard.whiteKing.team){
 				start = piece.getPosition();
 				if (piece.makeMove()) {
@@ -296,6 +298,7 @@ public class CurrentGame implements Serializable{
 			}
 		}
 		else {
+			Collections.shuffle(currentBoard.blackKing.team);
 			for(Piece piece : currentBoard.blackKing.team){
 				start = piece.getPosition();
 				if (piece.makeMove()) {
