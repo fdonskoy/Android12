@@ -27,6 +27,7 @@ import android.content.res.Resources;
 import android.widget.ListView;
 import android.widget.Toast;
 import android.graphics.drawable.Drawable;
+import android.support.v4.content.res.ResourcesCompat;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -131,11 +132,11 @@ public class OppeartionCenter extends AppCompatActivity
         Boolean made = false;
         made = currentGame.makeAImove();
         if (made) {
-            Toast.makeText(getApplicationContext(), "AI generated", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(), "Random move generated", Toast.LENGTH_SHORT).show();
             redrawBoard();
         }
         else {
-            Toast.makeText(getApplicationContext(), "Failed to generate AI", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(), "Failed to generate a random move", Toast.LENGTH_SHORT).show();
         }
 
     }
@@ -255,13 +256,13 @@ public class OppeartionCenter extends AppCompatActivity
                         OppeartionCenter.firstSelected = getResources().getResourceEntryName(v.getId());
 
                         OppeartionCenter.firstSelectedColor = OppeartionCenter.firstSelectedTile.getBackground();
-                        OppeartionCenter.firstSelectedTile.setBackground(getResources().getDrawable(R.drawable.bluish));
+                        OppeartionCenter.firstSelectedTile.setBackground(ResourcesCompat.getDrawable(getResources(), R.drawable.bluish, null));
                     } else if (OppeartionCenter.firstSelected != null) {
                         OppeartionCenter.secondSelectedTile = (ImageButton) v;
                         OppeartionCenter.secondSelected = getResources().getResourceEntryName(v.getId());
 
                         OppeartionCenter.secondSelectedColor = OppeartionCenter.secondSelectedTile.getBackground();
-                        OppeartionCenter.secondSelectedTile.setBackground(getResources().getDrawable(R.drawable.bluish));
+                        OppeartionCenter.secondSelectedTile.setBackground(ResourcesCompat.getDrawable(getResources(), R.drawable.bluish, null));
 
                         makeMove();
 
