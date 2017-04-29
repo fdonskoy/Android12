@@ -64,6 +64,8 @@ public class OppeartionCenter extends AppCompatActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+
         setContentView(R.layout.activity_oppeartion_center);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -136,9 +138,12 @@ public class OppeartionCenter extends AppCompatActivity
             if (currentGame.finished) {
                 return;
             }
+
+            CurrentGame temp = readCurrentGameFile("data.dat");
             Boolean made = false;
             made = currentGame.makeAImove();
             if (made) {
+                writeToUndo(temp);
                 Toast.makeText(getApplicationContext(), "Random move generated", Toast.LENGTH_SHORT).show();
                 redrawBoard();
                 writeIt("data.dat");
@@ -170,9 +175,11 @@ public class OppeartionCenter extends AppCompatActivity
 
     public void undoMove(View v) throws Exception {
         if (currentGame.finished) {
+            Toast.makeText(getApplicationContext(), "Game is already over. Can't undo.", Toast.LENGTH_SHORT).show();
             return;
         }
         if (readIt("Undo.dat")){
+            writeIt("data.dat");
             Toast.makeText(getApplicationContext(), "Move undone", Toast.LENGTH_SHORT).show();
             redrawBoard();
         }
@@ -290,7 +297,6 @@ public class OppeartionCenter extends AppCompatActivity
             });
         }
 
-
         redrawBoard();
     }
 
@@ -301,9 +307,11 @@ public class OppeartionCenter extends AppCompatActivity
             return;
         }
         try{
-
-            Boolean x = writeIt("Undo.dat");
             TypeOfMove madeMove = currentGame.makeMove(firstSelected + " " + secondSelected);
+
+            if(madeMove != TypeOfMove.INVALID && writeIt("Undo.dat")){
+                Toast.makeText(getApplicationContext(), "Undo Written correctly", Toast.LENGTH_SHORT).show();
+            }
 
             if(madeMove == TypeOfMove.VALID){
                 secondSelectedTile.setImageResource((Integer)firstSelectedTile.getTag());
@@ -332,7 +340,7 @@ public class OppeartionCenter extends AppCompatActivity
             }
             //currentGame.writeGame("currentGame");
         }catch(Exception e){
-            Log.e("AppCompatActivity",Log.getStackTraceString(e));
+            Toast.makeText(getApplicationContext(), "Saving Move Crashed", Toast.LENGTH_SHORT).show();
             return;
         }
     }
@@ -358,6 +366,8 @@ public class OppeartionCenter extends AppCompatActivity
                     if (writeIt(m_Text)) {
                         currentGame = new CurrentGame();
                         redrawBoard();
+                        writeIt("data.dat");
+                        writeIt("Undo.dat");
                     }
                     else {
                         Toast.makeText(getApplicationContext(), "Failed to write finished game " + m_Text , Toast.LENGTH_SHORT).show();
@@ -375,6 +385,8 @@ public class OppeartionCenter extends AppCompatActivity
                 try {
                     currentGame = new CurrentGame();
                     redrawBoard();
+                    writeIt("data.dat");
+                    writeIt("Undo.dat");
                 }
                 catch (Exception e) {
                     Toast.makeText(getApplicationContext(), "Failed to restart new game", Toast.LENGTH_SHORT).show();
@@ -492,7 +504,60 @@ public class OppeartionCenter extends AppCompatActivity
             //Toast.makeText(getApplicationContext(), "test saved", Toast.LENGTH_LONG).show();
             return true;
         } catch (Exception e) {
-            e.printStackTrace();
+            Toast.makeText(getApplicationContext(), "Failed to write to " + title, Toast.LENGTH_SHORT).show();
+            return false;
+        }
+    }
+
+
+    private CurrentGame readCurrentGameFile(String title){
+        try
+        {
+            File file = null;
+            File[] listOfFiles = getFilesDir().listFiles();
+            for (File f: listOfFiles) {
+                if (f.getName().equals(title)) {
+                    file = f;
+                    break;
+                }
+            }
+            if (file == null) {
+                return null;
+            }
+
+            FileInputStream fi = new FileInputStream(file);
+            ObjectInputStream oi = new ObjectInputStream(fi);
+            CurrentGame temp = (CurrentGame)oi.readObject();
+            oi.close();
+            fi.close();
+
+            return temp;
+        }
+        catch(Exception e){
+            return null;
+        }
+    }
+
+    private boolean writeToUndo(CurrentGame game) throws Exception{
+        File file = new File(getApplicationContext().getFilesDir(), "Undo.dat");
+
+        try {
+            FileOutputStream fileOut = new FileOutputStream(file);
+            ObjectOutputStream out = new ObjectOutputStream(fileOut);
+
+            DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+            Date date = new Date();
+            game.dateSaved = dateFormat.format(date);
+
+            out.writeObject(game);
+            out.close();
+            fileOut.close();
+
+
+            //Toast.makeText(getApplicationContext(), "test saved", Toast.LENGTH_LONG).show();
+            return true;
+        } catch (Exception e) {
+            Toast.makeText(getApplicationContext(), "Failed to write to " + "Undo.dat", Toast.LENGTH_SHORT).show();
             return false;
         }
     }
