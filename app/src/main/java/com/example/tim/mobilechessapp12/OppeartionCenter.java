@@ -85,7 +85,7 @@ public class OppeartionCenter extends AppCompatActivity
 
         try {
             if (!readIt("data.dat")) {
-                Toast.makeText(getApplicationContext(), "Didn't find current game OR game was finished", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), "No current active game found", Toast.LENGTH_SHORT).show();
                 currentGame = new CurrentGame();
             }
             else {
@@ -147,7 +147,8 @@ public class OppeartionCenter extends AppCompatActivity
                 Toast.makeText(getApplicationContext(), "Random move generated", Toast.LENGTH_SHORT).show();
                 redrawBoard();
                 writeIt("data.dat");
-                Toast.makeText(getApplicationContext(), "Failed to generate a random move", Toast.LENGTH_SHORT).show();
+            } else{
+                Toast.makeText(getApplicationContext(), "Can't generate random move generated", Toast.LENGTH_SHORT).show();
             }
         }
         catch (Exception e){
@@ -236,7 +237,6 @@ public class OppeartionCenter extends AppCompatActivity
         } else if (id == R.id.old_game_btn) {
             try {
                 writeIt("data.dat");
-                Toast.makeText(getApplicationContext(), "Clicked Nav item", Toast.LENGTH_SHORT).show();
 
                 Intent intent = new Intent(this, SavedGames.class);
                 startActivity(intent);
