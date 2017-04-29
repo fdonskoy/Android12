@@ -63,20 +63,7 @@ public class ReplayCenter extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.replay);
-        /*Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawer.setDrawerListener(toggle);
-        toggle.syncState();
-
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
-        navigationView.setNavigationItemSelectedListener(this);
-
-        //Button resign = (Button)findViewById(R.id.resign);
-*/
         Toast.makeText(getApplicationContext(), "Game selected: " + loadGame, Toast.LENGTH_LONG).show();
         AutoCompleteTextView t = (AutoCompleteTextView) findViewById(R.id.autoCompleteTextView);
         loadGame = loadGame.trim();
@@ -103,17 +90,6 @@ public class ReplayCenter extends AppCompatActivity
 
     }
 
-    /*
-    @Override
-    public void onBackPressed() {
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        if (drawer.isDrawerOpen(GravityCompat.START)) {
-            drawer.closeDrawer(GravityCompat.START);
-        } else {
-            super.onBackPressed();
-        }
-    }*/
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -127,12 +103,6 @@ public class ReplayCenter extends AppCompatActivity
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        /*if (id == R.id.action_settings) {
-            return true;
-        }*/
-
         return super.onOptionsItemSelected(item);
     }
 
@@ -148,8 +118,6 @@ public class ReplayCenter extends AppCompatActivity
             Log.d("My APP", "old games");
         }
 
-        //DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        //drawer.closeDrawer(GravityCompat.START);
         return true;
     }
 
@@ -160,9 +128,6 @@ public class ReplayCenter extends AppCompatActivity
         GridLayout board = (GridLayout) findViewById(R.id.chessBoard);
         currentBoardDisplay = board;
         //add an onClick to every square
-
-
-
         redrawBoard();
     }
 
@@ -171,7 +136,6 @@ public class ReplayCenter extends AppCompatActivity
         try{
             replay.listMoves.get(place).substring(0,2);
             replay.listMoves.get(place).substring(3,5);
-            //Toast.makeText(getApplicationContext(), "Extracted " + replay.listMoves.get(place).substring(0,2) + " and " + replay.listMoves.get(place).substring(3,5), Toast.LENGTH_SHORT).show();
             firstSelectedTile = findTile(replay.listMoves.get(place).substring(0,2));
             secondSelectedTile = findTile(replay.listMoves.get(place).substring(3,5));
 
