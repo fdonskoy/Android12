@@ -276,6 +276,15 @@ public class OppeartionCenter extends AppCompatActivity
                         OppeartionCenter.secondSelectedColor = OppeartionCenter.secondSelectedTile.getBackground();
                         OppeartionCenter.secondSelectedTile.setBackground(ResourcesCompat.getDrawable(getResources(), R.drawable.bluish, null));
 
+                        if (firstSelectedTile.equals(secondSelectedTile)) {
+                            OppeartionCenter.firstSelectedTile.setBackground(OppeartionCenter.firstSelectedColor);
+                            OppeartionCenter.firstSelectedTile = null;
+                            OppeartionCenter.secondSelectedTile = null;
+                            OppeartionCenter.firstSelected = null;
+                            OppeartionCenter.secondSelected = null;
+
+                            return;
+                        }
                         makeMove();
 
                         OppeartionCenter.firstSelectedTile.setBackground(OppeartionCenter.firstSelectedColor);
