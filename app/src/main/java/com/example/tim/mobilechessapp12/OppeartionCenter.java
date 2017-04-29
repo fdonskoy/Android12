@@ -26,6 +26,8 @@ import android.widget.ImageButton;
 import android.content.res.Resources;
 import android.widget.ListView;
 import android.widget.Toast;
+import android.graphics.drawable.Drawable;
+import android.support.v4.content.res.ResourcesCompat;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -38,6 +40,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+
 import Chess.logic.chess.Color;
 import Chess.logic.chess.CurrentGame;
 import Chess.logic.chess.TypeOfMove;
@@ -49,6 +52,9 @@ public class OppeartionCenter extends AppCompatActivity
     public static String secondSelected = null;
     public static ImageButton firstSelectedTile;
     public static ImageButton secondSelectedTile;
+    public static Drawable firstSelectedColor;
+    public static Drawable secondSelectedColor;
+
 
     public static GridLayout currentBoardDisplay;
     public static Resources resources;
@@ -58,6 +64,8 @@ public class OppeartionCenter extends AppCompatActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+
         setContentView(R.layout.activity_oppeartion_center);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -77,7 +85,12 @@ public class OppeartionCenter extends AppCompatActivity
 
         try {
             if (!readIt("data.dat")) {
+                Toast.makeText(getApplicationContext(), "Didn't find current game OR game was finished", Toast.LENGTH_SHORT).show();
                 currentGame = new CurrentGame();
+            }
+            else {
+                //it goes on to initialize the board from scratch anyway after the getresources line
+                Toast.makeText(getApplicationContext(), "Found current game", Toast.LENGTH_SHORT).show();
             }
             //Kid's Mate exists but is finished, so it was rejected when it was read as the currentGame
             /*if (!readIt("Kid's Mate")) {
@@ -89,6 +102,7 @@ public class OppeartionCenter extends AppCompatActivity
             }*/
         }
         catch (Exception e) {
+            Toast.makeText(getApplicationContext(), "Something Broke in checking for last game", Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -120,17 +134,24 @@ public class OppeartionCenter extends AppCompatActivity
     }
 
     public void randomMove(View v) {
-        if (currentGame.finished) {
-            return;
+        try {
+            if (currentGame.finished) {
+                return;
+            }
+
+            CurrentGame temp = readCurrentGameFile("data.dat");
+            Boolean made = false;
+            made = currentGame.makeAImove();
+            if (made) {
+                writeToUndo(temp);
+                Toast.makeText(getApplicationContext(), "Random move generated", Toast.LENGTH_SHORT).show();
+                redrawBoard();
+                writeIt("data.dat");
+                Toast.makeText(getApplicationContext(), "Failed to generate a random move", Toast.LENGTH_SHORT).show();
+            }
         }
-        Boolean made = false;
-        made = currentGame.makeAImove();
-        if (made) {
-            Toast.makeText(getApplicationContext(), "AI generated", Toast.LENGTH_SHORT).show();
-            redrawBoard();
-        }
-        else {
-            Toast.makeText(getApplicationContext(), "Failed to generate AI", Toast.LENGTH_SHORT).show();
+        catch (Exception e){
+            Toast.makeText(getApplicationContext(), "Failed to Record Random Move", Toast.LENGTH_SHORT).show();
         }
 
     }
@@ -154,9 +175,11 @@ public class OppeartionCenter extends AppCompatActivity
 
     public void undoMove(View v) throws Exception {
         if (currentGame.finished) {
+            Toast.makeText(getApplicationContext(), "Game is already over. Can't undo.", Toast.LENGTH_SHORT).show();
             return;
         }
         if (readIt("Undo.dat")){
+            writeIt("data.dat");
             Toast.makeText(getApplicationContext(), "Move undone", Toast.LENGTH_SHORT).show();
             redrawBoard();
         }
@@ -205,14 +228,12 @@ public class OppeartionCenter extends AppCompatActivity
         int id = item.getItemId();
 
         if (id == R.id.new_game_btn) {
-            Log.d("My APP", "new game");
             if (currentGame.currentBoard.turnNum != 1) {
                 saveGameTitleOrNah();
             }
             DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
             drawer.closeDrawer(GravityCompat.START);
         } else if (id == R.id.old_game_btn) {
-            Log.d("My APP", "old games");
             try {
                 writeIt("data.dat");
                 Toast.makeText(getApplicationContext(), "Clicked Nav item", Toast.LENGTH_SHORT).show();
@@ -229,15 +250,12 @@ public class OppeartionCenter extends AppCompatActivity
 
         //DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         //drawer.closeDrawer(GravityCompat.START);
-
-
         return true;
     }
 
 
 
     public void initializeBoard() throws Exception{
-        currentGame = new CurrentGame();
         GridLayout board = (GridLayout) findViewById(R.id.chessBoard);
         currentBoardDisplay = board;
         //add an onClick to every square
@@ -248,101 +266,36 @@ public class OppeartionCenter extends AppCompatActivity
                     if (OppeartionCenter.firstSelected == null) {
                         OppeartionCenter.firstSelectedTile = (ImageButton) v;
                         OppeartionCenter.firstSelected = getResources().getResourceEntryName(v.getId());
+
+                        OppeartionCenter.firstSelectedColor = OppeartionCenter.firstSelectedTile.getBackground();
+                        OppeartionCenter.firstSelectedTile.setBackground(ResourcesCompat.getDrawable(getResources(), R.drawable.bluish, null));
                     } else if (OppeartionCenter.firstSelected != null) {
                         OppeartionCenter.secondSelectedTile = (ImageButton) v;
                         OppeartionCenter.secondSelected = getResources().getResourceEntryName(v.getId());
 
+                        OppeartionCenter.secondSelectedColor = OppeartionCenter.secondSelectedTile.getBackground();
+                        OppeartionCenter.secondSelectedTile.setBackground(ResourcesCompat.getDrawable(getResources(), R.drawable.bluish, null));
+
                         makeMove();
+
+                        OppeartionCenter.firstSelectedTile.setBackground(OppeartionCenter.firstSelectedColor);
+                        OppeartionCenter.secondSelectedTile.setBackground(OppeartionCenter.secondSelectedColor);
 
                         OppeartionCenter.firstSelectedTile = null;
                         OppeartionCenter.secondSelectedTile = null;
                         OppeartionCenter.firstSelected = null;
                         OppeartionCenter.secondSelected = null;
+                        OppeartionCenter.firstSelectedColor = null;
+                        OppeartionCenter.secondSelectedColor = null;
                     } else if (firstSelected.equals(getResources().getResourceEntryName(v.getId()))) {
                         OppeartionCenter.firstSelectedTile = null;
                         OppeartionCenter.secondSelectedTile = null;
                         OppeartionCenter.firstSelected = null;
                         OppeartionCenter.secondSelected = null;
                     }
-                    System.out.println("done");
                 }
             });
-
-            /*String id = getResources().getResourceEntryName(currentSquare.getId());
-            switch(id){
-                case "a1":
-                case "h1":
-                    currentSquare.setImageResource(R.drawable.white_rook);
-                    currentSquare.setTag(R.drawable.white_rook);
-                    break;
-                case "b1":
-                case "g1":
-                    currentSquare.setImageResource(R.drawable.white_knight);
-                    currentSquare.setTag(R.drawable.white_knight);
-                    break;
-                case "c1":
-                case "f1":
-                    currentSquare.setImageResource(R.drawable.white_bishop);
-                    currentSquare.setTag(R.drawable.white_bishop);
-                    break;
-                case "d1":
-                    currentSquare.setImageResource(R.drawable.white_queen);
-                    currentSquare.setTag(R.drawable.white_queen);
-                    break;
-                case "e1":
-                    currentSquare.setImageResource(R.drawable.white_king);
-                    currentSquare.setTag(R.drawable.white_king);
-                    break;
-                case "a2":
-                case "b2":
-                case "c2":
-                case "d2":
-                case "e2":
-                case "f2":
-                case "g2":
-                case "h2":
-                    currentSquare.setImageResource(R.drawable.white_pawn);
-                    currentSquare.setTag(R.drawable.white_pawn);
-                    break;
-                case "a7":
-                case "b7":
-                case "c7":
-                case "d7":
-                case "e7":
-                case "f7":
-                case "g7":
-                case "h7":
-                    currentSquare.setImageResource(R.drawable.black_pawn);
-                    currentSquare.setTag(R.drawable.black_pawn);
-                    break;
-                case "a8":
-                case "h8":
-                    currentSquare.setImageResource(R.drawable.black_rook);
-                    currentSquare.setTag(R.drawable.black_rook);
-                    break;
-                case "b8":
-                case "g8":
-                    currentSquare.setImageResource(R.drawable.black_knight);
-                    currentSquare.setTag(R.drawable.black_knight);
-                    break;
-                case "c8":
-                case "f8":
-                    currentSquare.setImageResource(R.drawable.black_bishop);
-                    currentSquare.setTag(R.drawable.black_bishop);
-                    break;
-                case "d8":
-                    currentSquare.setImageResource(R.drawable.black_queen);
-                    currentSquare.setTag(R.drawable.black_queen);
-                    break;
-                case "e8":
-                    currentSquare.setImageResource(R.drawable.black_king);
-                    currentSquare.setTag(R.drawable.black_king);
-                    break;
-                default:
-                    break;
-            }*/
         }
-
 
         redrawBoard();
     }
@@ -350,12 +303,16 @@ public class OppeartionCenter extends AppCompatActivity
 
     public void makeMove(){
         if (currentGame.finished) {
+            Toast.makeText(getApplicationContext(), "Current Game is already finished", Toast.LENGTH_SHORT).show();
             return;
         }
         try{
-
-            Boolean x = writeIt("Undo.dat");
+            CurrentGame temp = readCurrentGameFile("data.dat");
             TypeOfMove madeMove = currentGame.makeMove(firstSelected + " " + secondSelected);
+
+            if(madeMove != TypeOfMove.INVALID){
+                writeToUndo(temp);
+            }
 
             if(madeMove == TypeOfMove.VALID){
                 secondSelectedTile.setImageResource((Integer)firstSelectedTile.getTag());
@@ -379,11 +336,12 @@ public class OppeartionCenter extends AppCompatActivity
             }
 
             Boolean t = writeIt("data.dat");
-
-
+            if(!t){
+                Toast.makeText(getApplicationContext(), "Saving Move Failed", Toast.LENGTH_SHORT).show();
+            }
             //currentGame.writeGame("currentGame");
         }catch(Exception e){
-            Log.e("AppCompatActivity",Log.getStackTraceString(e));
+            Toast.makeText(getApplicationContext(), "Saving Move Crashed", Toast.LENGTH_SHORT).show();
             return;
         }
     }
@@ -409,6 +367,8 @@ public class OppeartionCenter extends AppCompatActivity
                     if (writeIt(m_Text)) {
                         currentGame = new CurrentGame();
                         redrawBoard();
+                        writeIt("data.dat");
+                        writeIt("Undo.dat");
                     }
                     else {
                         Toast.makeText(getApplicationContext(), "Failed to write finished game " + m_Text , Toast.LENGTH_SHORT).show();
@@ -426,6 +386,8 @@ public class OppeartionCenter extends AppCompatActivity
                 try {
                     currentGame = new CurrentGame();
                     redrawBoard();
+                    writeIt("data.dat");
+                    writeIt("Undo.dat");
                 }
                 catch (Exception e) {
                     Toast.makeText(getApplicationContext(), "Failed to restart new game", Toast.LENGTH_SHORT).show();
@@ -528,8 +490,7 @@ public class OppeartionCenter extends AppCompatActivity
         File file = new File(getApplicationContext().getFilesDir(), title);
 
         try {
-            FileOutputStream fileOut =
-                    new FileOutputStream(file);
+            FileOutputStream fileOut = new FileOutputStream(file);
             ObjectOutputStream out = new ObjectOutputStream(fileOut);
 
             DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
@@ -544,7 +505,60 @@ public class OppeartionCenter extends AppCompatActivity
             //Toast.makeText(getApplicationContext(), "test saved", Toast.LENGTH_LONG).show();
             return true;
         } catch (Exception e) {
-            e.printStackTrace();
+            Toast.makeText(getApplicationContext(), "Failed to write to " + title, Toast.LENGTH_SHORT).show();
+            return false;
+        }
+    }
+
+
+    private CurrentGame readCurrentGameFile(String title){
+        try
+        {
+            File file = null;
+            File[] listOfFiles = getFilesDir().listFiles();
+            for (File f: listOfFiles) {
+                if (f.getName().equals(title)) {
+                    file = f;
+                    break;
+                }
+            }
+            if (file == null) {
+                return null;
+            }
+
+            FileInputStream fi = new FileInputStream(file);
+            ObjectInputStream oi = new ObjectInputStream(fi);
+            CurrentGame temp = (CurrentGame)oi.readObject();
+            oi.close();
+            fi.close();
+
+            return temp;
+        }
+        catch(Exception e){
+            return null;
+        }
+    }
+
+    private boolean writeToUndo(CurrentGame game) throws Exception{
+        File file = new File(getApplicationContext().getFilesDir(), "Undo.dat");
+
+        try {
+            FileOutputStream fileOut = new FileOutputStream(file);
+            ObjectOutputStream out = new ObjectOutputStream(fileOut);
+
+            DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+            Date date = new Date();
+            game.dateSaved = dateFormat.format(date);
+
+            out.writeObject(game);
+            out.close();
+            fileOut.close();
+
+
+            //Toast.makeText(getApplicationContext(), "test saved", Toast.LENGTH_LONG).show();
+            return true;
+        } catch (Exception e) {
+            Toast.makeText(getApplicationContext(), "Failed to write to " + "Undo.dat", Toast.LENGTH_SHORT).show();
             return false;
         }
     }
