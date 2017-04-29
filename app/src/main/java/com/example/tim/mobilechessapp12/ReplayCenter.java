@@ -93,7 +93,7 @@ public class ReplayCenter extends AppCompatActivity
                 Toast.makeText(getApplicationContext(), "Loaded " + loadGame, Toast.LENGTH_LONG).show();
                 replay = new CurrentGame();
                 replay = currentGame;
-                replay.currentBoard = new Board();
+                //replay.currentBoard = new Board();
             }
             grid = (GridLayout) findViewById(R.id.chessBoard);
         }
@@ -160,107 +160,7 @@ public class ReplayCenter extends AppCompatActivity
         GridLayout board = (GridLayout) findViewById(R.id.chessBoard);
         currentBoardDisplay = board;
         //add an onClick to every square
-        for(int i = 0; i < board.getChildCount(); i++){
-            ImageButton currentSquare = (ImageButton) board.getChildAt(i);
-            currentSquare.setOnClickListener(new View.OnClickListener()   {
-                public void onClick(View v) {
-                    if (OppeartionCenter.firstSelected == null) {
-                        OppeartionCenter.firstSelectedTile = (ImageButton) v;
-                        OppeartionCenter.firstSelected = getResources().getResourceEntryName(v.getId());
-                    } else if (OppeartionCenter.firstSelected != null) {
-                        OppeartionCenter.secondSelectedTile = (ImageButton) v;
-                        OppeartionCenter.secondSelected = getResources().getResourceEntryName(v.getId());
 
-                        makeMove();
-
-                        OppeartionCenter.firstSelectedTile = null;
-                        OppeartionCenter.secondSelectedTile = null;
-                        OppeartionCenter.firstSelected = null;
-                        OppeartionCenter.secondSelected = null;
-                    } else if (firstSelected.equals(getResources().getResourceEntryName(v.getId()))) {
-                        OppeartionCenter.firstSelectedTile = null;
-                        OppeartionCenter.secondSelectedTile = null;
-                        OppeartionCenter.firstSelected = null;
-                        OppeartionCenter.secondSelected = null;
-                    }
-                    System.out.println("done");
-                }
-            });
-
-            /*String id = getResources().getResourceEntryName(currentSquare.getId());
-            switch(id){
-                case "a1":
-                case "h1":
-                    currentSquare.setImageResource(R.drawable.white_rook);
-                    currentSquare.setTag(R.drawable.white_rook);
-                    break;
-                case "b1":
-                case "g1":
-                    currentSquare.setImageResource(R.drawable.white_knight);
-                    currentSquare.setTag(R.drawable.white_knight);
-                    break;
-                case "c1":
-                case "f1":
-                    currentSquare.setImageResource(R.drawable.white_bishop);
-                    currentSquare.setTag(R.drawable.white_bishop);
-                    break;
-                case "d1":
-                    currentSquare.setImageResource(R.drawable.white_queen);
-                    currentSquare.setTag(R.drawable.white_queen);
-                    break;
-                case "e1":
-                    currentSquare.setImageResource(R.drawable.white_king);
-                    currentSquare.setTag(R.drawable.white_king);
-                    break;
-                case "a2":
-                case "b2":
-                case "c2":
-                case "d2":
-                case "e2":
-                case "f2":
-                case "g2":
-                case "h2":
-                    currentSquare.setImageResource(R.drawable.white_pawn);
-                    currentSquare.setTag(R.drawable.white_pawn);
-                    break;
-                case "a7":
-                case "b7":
-                case "c7":
-                case "d7":
-                case "e7":
-                case "f7":
-                case "g7":
-                case "h7":
-                    currentSquare.setImageResource(R.drawable.black_pawn);
-                    currentSquare.setTag(R.drawable.black_pawn);
-                    break;
-                case "a8":
-                case "h8":
-                    currentSquare.setImageResource(R.drawable.black_rook);
-                    currentSquare.setTag(R.drawable.black_rook);
-                    break;
-                case "b8":
-                case "g8":
-                    currentSquare.setImageResource(R.drawable.black_knight);
-                    currentSquare.setTag(R.drawable.black_knight);
-                    break;
-                case "c8":
-                case "f8":
-                    currentSquare.setImageResource(R.drawable.black_bishop);
-                    currentSquare.setTag(R.drawable.black_bishop);
-                    break;
-                case "d8":
-                    currentSquare.setImageResource(R.drawable.black_queen);
-                    currentSquare.setTag(R.drawable.black_queen);
-                    break;
-                case "e8":
-                    currentSquare.setImageResource(R.drawable.black_king);
-                    currentSquare.setTag(R.drawable.black_king);
-                    break;
-                default:
-                    break;
-            }*/
-        }
 
 
         redrawBoard();
@@ -396,7 +296,7 @@ public class ReplayCenter extends AppCompatActivity
         if (place == replay.listMoves.size()-1){
             String last = replay.listMoves.get(place);
             if (last.equals("resign")) {
-                if (currentGame.currentBoard.turn.equals(Color.Black)) {
+                if (replay.currentBoard.turn.equals(Color.Black)) {
                     Toast.makeText(getApplicationContext(), "White Resigned. Black wins!", Toast.LENGTH_SHORT).show();
                 }
                 else {
@@ -410,10 +310,10 @@ public class ReplayCenter extends AppCompatActivity
                 place++;
                 return;
             }
-            else if (currentGame.currentBoard.whiteKing.checkmate() ) {
+            else if (replay.currentBoard.whiteKing.checkmate() ) {
                 Toast.makeText(getApplicationContext(), "Checkmate! Black wins!", Toast.LENGTH_SHORT).show();
             }
-            else if (currentGame.currentBoard.blackKing.checkmate()) {
+            else if (replay.currentBoard.blackKing.checkmate()) {
                 Toast.makeText(getApplicationContext(), "Checkmate! White wins!", Toast.LENGTH_SHORT).show();
             }
             makeMove();
