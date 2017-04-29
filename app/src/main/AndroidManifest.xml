@@ -11,7 +11,7 @@
         android:theme="@style/AppTheme">
         <activity
             android:name=".OppeartionCenter"
-            android:label="@string/title_activity_oppeartion_center"
+            android:label="Chess12"
             android:theme="@style/AppTheme.NoActionBar">
 
             <intent-filter>
