@@ -307,10 +307,11 @@ public class OppeartionCenter extends AppCompatActivity
             return;
         }
         try{
+            CurrentGame temp = readCurrentGameFile("data.dat");
             TypeOfMove madeMove = currentGame.makeMove(firstSelected + " " + secondSelected);
 
-            if(madeMove != TypeOfMove.INVALID && writeIt("Undo.dat")){
-                Toast.makeText(getApplicationContext(), "Undo Written correctly", Toast.LENGTH_SHORT).show();
+            if(madeMove != TypeOfMove.INVALID){
+                writeToUndo(temp);
             }
 
             if(madeMove == TypeOfMove.VALID){
