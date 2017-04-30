@@ -118,4 +118,50 @@ public class Queen extends Piece{
 		return possibleMove;
 	}
 
+	@Override
+	public Position getValidMove() {
+		// TODO Auto-generated method stub
+
+		Position northEast = this.getPosition().getNorthEast();
+		Position northWest = this.getPosition().getNorthWest();
+		Position southEast = this.getPosition().getSouthEast();
+		Position southWest = this.getPosition().getSouthWest();
+
+		Position north = this.getPosition().getNorth();
+		Position south = this.getPosition().getSouth();
+		Position east = this.getPosition().getEast();
+		Position west = this.getPosition().getWest();
+
+		if (!overrideTestMove) {
+			testMove = true;
+		}
+
+
+		Position retval = null;
+
+		if(move(northEast) != TypeOfMove.INVALID){
+			retval = northEast;
+		}
+		else if(move(northWest) != TypeOfMove.INVALID){
+			retval = northWest;
+		}
+		else if(move(southEast) != TypeOfMove.INVALID){
+			retval = southEast;
+		} else if(move(southWest) != TypeOfMove.INVALID){
+			retval = southWest;
+		}else if(move(north) != TypeOfMove.INVALID){
+			retval = north;
+		}
+		else if(move(west) != TypeOfMove.INVALID){
+			retval = west;
+		}
+		else if(move(south) != TypeOfMove.INVALID){
+			retval = south;
+		} else if(move(east) != TypeOfMove.INVALID){
+			retval = east;
+		}
+
+		testMove = false;
+		return retval;
+	}
 }

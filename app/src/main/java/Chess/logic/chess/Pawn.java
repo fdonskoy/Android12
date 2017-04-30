@@ -289,5 +289,56 @@ public class Pawn extends Piece {
 		return possibleMove;
 	}
 
+	@Override
+    public Position getValidMove(){
+        Position northNorth = this.getPosition();
+        Position southSouth = this.getPosition();
+        Position north = this.getPosition().getNorth();
+        if (north != null) {
+            northNorth = this.getPosition().getNorth().getNorth();
+        }
+        Position south = this.getPosition().getSouth();
+        if (south != null) {
+            southSouth = this.getPosition().getSouth().getSouth();
+        }
 
+
+        Position northEast = this.getPosition().getNorthEast();
+        Position northWest = this.getPosition().getNorthWest();
+        Position southEast = this.getPosition().getSouthEast();
+        Position southWest = this.getPosition().getSouthWest();
+
+        if (!overrideTestMove) {
+            testMove = true;
+        }
+
+        Position retval = null;
+
+        if(move(northNorth) != TypeOfMove.INVALID){
+            retval = northNorth;
+        }
+        else if(move(north) != TypeOfMove.INVALID){
+            retval = north;
+        }
+        else if(move(southSouth) != TypeOfMove.INVALID){
+            retval = southSouth;
+        }
+        else if(move(south) != TypeOfMove.INVALID){
+            retval = south;
+        }
+        else if(move(northEast) != TypeOfMove.INVALID){
+            retval = northEast;
+        }
+        else if(move(northWest) != TypeOfMove.INVALID){
+            retval = northWest;
+        }
+        else if(move(southEast) != TypeOfMove.INVALID){
+            retval = southEast;
+        } else if(move(southWest) != TypeOfMove.INVALID){
+            retval = southWest;
+        }
+
+        testMove = false;
+        return retval;
+    }
 }

@@ -115,4 +115,37 @@ public class Rook extends Piece{
 		return possibleMove;
 	}
 
+	@Override
+	public Position getValidMove() {
+		// TODO Auto-generated method stub
+
+		Position north = this.getPosition().getNorth();
+		Position south = this.getPosition().getSouth();
+		Position east = this.getPosition().getEast();
+		Position west = this.getPosition().getWest();
+
+		if (!overrideTestMove) {
+			testMove = true;
+		}
+
+
+		Position retval = null;
+
+		if(move(north) != TypeOfMove.INVALID){
+			retval = north;
+		}
+		else if(move(west) != TypeOfMove.INVALID){
+			retval = west;
+		}
+		else if(move(south) != TypeOfMove.INVALID){
+			retval = south;
+		}
+		else if(move(east) != TypeOfMove.INVALID){
+			retval = east;
+		}
+
+		testMove = false;
+		return retval;
+	}
+
 }
