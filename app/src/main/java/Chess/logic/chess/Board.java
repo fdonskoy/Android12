@@ -120,10 +120,15 @@ public class Board implements Serializable {
 	 * @exception Exception - thrown if invalid positions on the board given*/
 	public void move(Position start, Position finish) throws Exception{
 		Piece piece = start.getPiece();
-		
-		if(finish.getPiece() != null)
-			if(finish.getPiece().getColor() == Color.White) whiteKing.team.remove(finish.getPiece());
-			else blackKing.team.add(finish.getPiece());
+
+		if(finish.getPiece() != null){
+			if(finish.getPiece().getColor() == Color.White) {
+				whiteKing.team.remove(finish.getPiece());
+			}
+			else {
+				blackKing.team.remove(finish.getPiece());
+			}
+		}
 		
 		finish.setPiece(piece);
 		piece.getPosition().setPiece(null);

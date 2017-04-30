@@ -283,30 +283,47 @@ public class CurrentGame implements Serializable{
 		gameOver();
 	}
 
-	public boolean makeAImove() {
+	public boolean makeAImove() throws Exception {
 		Position start = null;
+		Position finish = null;
 		if (currentBoard.turn == Color.White) {
 			Collections.shuffle(currentBoard.whiteKing.team);
 			for(Piece piece : currentBoard.whiteKing.team){
 				start = piece.getPosition();
-				if (piece.makeMove()) {
+				finish = piece.getValidMove();
+				if (finish != null) {
+					makeMove("" + start.getFile() + start.getRank() + " " + finish.getFile() + finish.getRank());
 					System.out.println(currentBoard);
 					piece.overrideTestMove = false;
 					listMoves.add("" + start.getFile() + start.getRank() + " " + piece.getPosition().getFile() + piece.getPosition().getRank());
 					return true;
 				}
+				/*if (piece.makeMove()) {
+					System.out.println(currentBoard);
+					piece.overrideTestMove = false;
+					listMoves.add("" + start.getFile() + start.getRank() + " " + piece.getPosition().getFile() + piece.getPosition().getRank());
+					return true;
+				}*/
 			}
 		}
 		else {
 			Collections.shuffle(currentBoard.blackKing.team);
 			for(Piece piece : currentBoard.blackKing.team){
 				start = piece.getPosition();
-				if (piece.makeMove()) {
+				finish = piece.getValidMove();
+				if (finish != null) {
+					makeMove("" + start.getFile() + start.getRank() + " " + finish.getFile() + finish.getRank());
 					System.out.println(currentBoard);
 					piece.overrideTestMove = false;
 					listMoves.add("" + start.getFile() + start.getRank() + " " + piece.getPosition().getFile() + piece.getPosition().getRank());
 					return true;
 				}
+				/*if (piece.makeMove()) {
+					System.out.println(currentBoard);
+					piece.overrideTestMove = false;
+					listMoves.add("" + start.getFile() + start.getRank() + " " + piece.getPosition().getFile() + piece.getPosition().getRank());
+					return true;
+				}*/
 
 			}
 		}
