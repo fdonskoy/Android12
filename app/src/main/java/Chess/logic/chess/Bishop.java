@@ -109,5 +109,35 @@ public class Bishop extends Piece{
 		return possibleMove;
 	}
 
+	@Override
+	public Position getValidMove() {
+		// TODO Auto-generated method stub
 
+		Position northEast = this.getPosition().getNorthEast();
+		Position northWest = this.getPosition().getNorthWest();
+		Position southEast = this.getPosition().getSouthEast();
+		Position southWest = this.getPosition().getSouthWest();
+
+		if (!overrideTestMove) {
+			testMove = true;
+		}
+
+
+		Position retval = null;
+
+		if(move(northEast) != TypeOfMove.INVALID){
+			retval = northEast;
+		}
+		else if(move(northWest) != TypeOfMove.INVALID){
+			retval = northWest;
+		}
+		else if(move(southEast) != TypeOfMove.INVALID){
+			retval = southEast;
+		} else if(move(southWest) != TypeOfMove.INVALID){
+			retval = southWest;
+		}
+
+		testMove = false;
+		return retval;
+	}
 }

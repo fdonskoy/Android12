@@ -311,6 +311,92 @@ public class King extends Piece{
 		return 	north || northEast || east || southEast || south || southWest || west || northWest;
 	}
 
+	@Override
+	public Position getValidMove(){
+		// TODO Auto-generated method stub
+		boolean north = !(this.getPosition().getNorth() == null 		|| (this.getPosition().getNorth().getPiece() != null 		&& this.getPosition().getNorth().getPiece().getColor() == this.getColor()		)|| !this.getPosition().getNorth().getAttackers(this.getColor()).isEmpty());
+		boolean northEast = !(this.getPosition().getNorthEast() == null || (this.getPosition().getNorthEast().getPiece() != null 	&& this.getPosition().getNorthEast().getPiece().getColor() == this.getColor()	)|| !this.getPosition().getNorthEast().getAttackers(this.getColor()).isEmpty());
+		boolean east = !(this.getPosition().getNorthEast() == null 		|| (this.getPosition().getEast().getPiece() != null			&& this.getPosition().getEast().getPiece().getColor() == this.getColor()		)|| !this.getPosition().getEast().getAttackers(this.getColor()).isEmpty());
+		boolean southEast = !(this.getPosition().getSouthEast() == null || (this.getPosition().getSouthEast().getPiece() != null 	&& this.getPosition().getSouthEast().getPiece().getColor() == this.getColor()	)|| !this.getPosition().getSouthEast().getAttackers(this.getColor()).isEmpty());
+		boolean south = !(this.getPosition().getSouth() == null 		|| (this.getPosition().getSouth().getPiece() != null		&& this.getPosition().getSouth().getPiece().getColor() == this.getColor()		)|| !this.getPosition().getSouth().getAttackers(this.getColor()).isEmpty());
+		boolean southWest = !(this.getPosition().getSouthWest() == null || (this.getPosition().getSouthWest().getPiece() != null 	&& this.getPosition().getSouthWest().getPiece().getColor() == this.getColor()	)|| !this.getPosition().getSouthWest().getAttackers(this.getColor()).isEmpty());
+		boolean west = !(this.getPosition().getWest() == null 			|| (this.getPosition().getWest().getPiece() != null			&& this.getPosition().getWest().getPiece().getColor() == this.getColor()		)|| !this.getPosition().getWest().getAttackers(this.getColor()).isEmpty());
+		boolean northWest = !(this.getPosition().getNorthWest() == null || (this.getPosition().getNorthWest().getPiece() != null 	&& this.getPosition().getNorthWest().getPiece().getColor() == this.getColor()	)|| !this.getPosition().getNorthWest().getAttackers(this.getColor()).isEmpty());
+
+		if (overrideTestMove) {
+			if (move(this.getPosition().getNorth()) == TypeOfMove.VALID) {
+				return this.getPosition().getNorth();
+			}
+			if (move(this.getPosition().getNorthEast()) == TypeOfMove.VALID) {
+				return this.getPosition().getNorthEast();
+			}
+			if (move(this.getPosition().getEast()) == TypeOfMove.VALID) {
+				return this.getPosition().getEast();
+			}
+			if (move(this.getPosition().getSouthEast()) == TypeOfMove.VALID) {
+				return this.getPosition().getSouthEast();
+			}
+			if (move(this.getPosition().getSouth()) == TypeOfMove.VALID) {
+				return this.getPosition().getSouth();
+			}
+			if (move(this.getPosition().getSouthWest()) == TypeOfMove.VALID) {
+				return this.getPosition().getSouthWest();
+			}
+			if (move(this.getPosition().getWest()) == TypeOfMove.VALID) {
+				return this.getPosition().getWest();
+			}
+			if (move(this.getPosition().getNorthWest()) == TypeOfMove.VALID) {
+				return this.getPosition().getNorthWest();
+			}
+			if (this.getPosition().getWest() != null && this.getPosition().getWest().getWest() != null) {
+				if (move(this.getPosition().getWest().getWest()) == TypeOfMove.CASTLE_LEFT) {
+					return this.getPosition().getWest().getWest();
+				}
+			}
+			if (this.getPosition().getEast() != null && this.getPosition().getEast().getEast() != null) {
+				if (move(this.getPosition().getEast().getEast()) == TypeOfMove.CASTLE_RIGHT) {
+					return this.getPosition().getEast().getEast();
+				}
+			}
+			return null;
+		}
+
+		if(north){
+			return this.getPosition().getNorth();
+		}
+
+		if(northEast){
+			return this.getPosition().getNorthEast();
+		}
+
+		if(east){
+			return this.getPosition().getEast();
+		}
+
+		if(southEast){
+			return this.getPosition().getSouthEast();
+		}
+
+		if(south){
+			return this.getPosition().getSouth();
+		}
+
+		if(southWest){
+			return this.getPosition().getSouthWest();
+		}
+
+		if(west){
+			return this.getPosition().getWest();
+		}
+
+		if(northWest){
+			return this.getPosition().getNorthWest();
+		}
+
+		return 	null;
+	}
+
+
 	/**
 	 * @author Timothy Elbert
 	 * @return linked list of pieces attacking this king
