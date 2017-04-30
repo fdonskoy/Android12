@@ -92,17 +92,8 @@ public class OppeartionCenter extends AppCompatActivity
                 //it goes on to initialize the board from scratch anyway after the getresources line
                 Toast.makeText(getApplicationContext(), "Found current game", Toast.LENGTH_SHORT).show();
             }
-            //Kid's Mate exists but is finished, so it was rejected when it was read as the currentGame
-            /*if (!readIt("Kid's Mate")) {
-                Toast.makeText(getApplicationContext(), "Didn't find Kid's Mate", Toast.LENGTH_LONG).show();
-                currentGame = new CurrentGame();
-            }
-            else {
-                Toast.makeText(getApplicationContext(), "State of finished in Kid's Mate is " + currentGame.finished, Toast.LENGTH_LONG).show();
-            }*/
         }
         catch (Exception e) {
-            Toast.makeText(getApplicationContext(), "Something Broke in checking for last game", Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -469,28 +460,33 @@ public class OppeartionCenter extends AppCompatActivity
     }
 
     //need to cycle through all files
-    private boolean readIt(String title) throws Exception{
-        File file = null;
-        File[] listOfFiles = getFilesDir().listFiles();
-        for (File f: listOfFiles) {
-            if (f.getName().equals(title)) {
-
-                file = f;
-                break;
+    private boolean readIt(String title) {
+         try{
+            File file = null;
+            File[] listOfFiles = getFilesDir().listFiles();
+            for (File f : listOfFiles) {
+                if (f.getName().equals(title)) {
+                    file = f;
+                    break;
+                }
             }
+            if (file == null) {
+                return false;
+            }
+            FileInputStream fi = new FileInputStream(file);
+            ObjectInputStream oi = new ObjectInputStream(fi);
+            currentGame = (CurrentGame) oi.readObject();
+            oi.close();
+            fi.close();
+            if (currentGame.finished) {
+                return false;
+            }
+            return true;
         }
-        if (file == null) {
+        catch(Exception e){
+            Toast.makeText(getApplicationContext(), "Something Broke in checking for last game", Toast.LENGTH_SHORT).show();
             return false;
         }
-        FileInputStream fi = new FileInputStream(file);
-        ObjectInputStream oi = new ObjectInputStream(fi);
-        currentGame = (CurrentGame)oi.readObject();
-        oi.close();
-        fi.close();
-        if (currentGame.finished){
-            return false;
-        }
-        return true;
     }
 
     private boolean writeIt(String title) throws Exception{
