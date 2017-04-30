@@ -185,6 +185,7 @@ public class ReplayCenter extends AppCompatActivity
             Log.e("AppCompatActivity",Log.getStackTraceString(e));
             return;
         }
+
     }
 
     private ImageButton findTile(String tileID){

@@ -218,7 +218,7 @@ public class SavedGames extends AppCompatActivity
         {
             public int compare(String lhs, String rhs)
             {
-                return lhs.substring(0, lhs.lastIndexOf("| Date:")).compareTo(rhs.substring(0, rhs.lastIndexOf("| Date:")));
+                return lhs.substring(0, lhs.lastIndexOf("| Date:")).trim().toLowerCase().compareTo(rhs.substring(0, rhs.lastIndexOf("| Date:")).trim().toLowerCase());
             }
         }
 
