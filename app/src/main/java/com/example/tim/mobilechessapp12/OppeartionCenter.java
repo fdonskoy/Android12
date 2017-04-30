@@ -73,7 +73,7 @@ public class OppeartionCenter extends AppCompatActivity
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawer.setDrawerListener(toggle);
+        drawer.addDrawerListener(toggle);
         toggle.syncState();
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
@@ -85,7 +85,7 @@ public class OppeartionCenter extends AppCompatActivity
 
         try {
             if (!readIt("data.dat")) {
-                Toast.makeText(getApplicationContext(), "Didn't find current game OR game was finished", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), "No current active game found", Toast.LENGTH_SHORT).show();
                 currentGame = new CurrentGame();
             }
             else {
@@ -112,7 +112,6 @@ public class OppeartionCenter extends AppCompatActivity
             initializeBoard();
         }
         catch (Exception e) {
-            return;
         }
 
     }
@@ -147,7 +146,8 @@ public class OppeartionCenter extends AppCompatActivity
                 Toast.makeText(getApplicationContext(), "Random move generated", Toast.LENGTH_SHORT).show();
                 redrawBoard();
                 writeIt("data.dat");
-                Toast.makeText(getApplicationContext(), "Failed to generate a random move", Toast.LENGTH_SHORT).show();
+            } else{
+                Toast.makeText(getApplicationContext(), "Can't generate random move generated", Toast.LENGTH_SHORT).show();
             }
         }
         catch (Exception e){
@@ -236,7 +236,6 @@ public class OppeartionCenter extends AppCompatActivity
         } else if (id == R.id.old_game_btn) {
             try {
                 writeIt("data.dat");
-                Toast.makeText(getApplicationContext(), "Clicked Nav item", Toast.LENGTH_SHORT).show();
 
                 Intent intent = new Intent(this, SavedGames.class);
                 startActivity(intent);
@@ -351,7 +350,6 @@ public class OppeartionCenter extends AppCompatActivity
             //currentGame.writeGame("currentGame");
         }catch(Exception e){
             Toast.makeText(getApplicationContext(), "Saving Move Crashed", Toast.LENGTH_SHORT).show();
-            return;
         }
     }
 
@@ -385,7 +383,6 @@ public class OppeartionCenter extends AppCompatActivity
                 }
                 catch (Exception e) {
                     Toast.makeText(getApplicationContext(), "Failed to save", Toast.LENGTH_SHORT).show();
-                    return;
                 }
             }
         });
