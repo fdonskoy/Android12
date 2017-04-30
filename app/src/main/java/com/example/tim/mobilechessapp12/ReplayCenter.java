@@ -44,17 +44,13 @@ import Chess.logic.chess.TypeOfMove;
 public class ReplayCenter extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
-    public static String firstSelected = null;
-    public static String secondSelected = null;
-    public static ImageButton firstSelectedTile;
-    public static ImageButton secondSelectedTile;
-
     public static GridLayout currentBoardDisplay;
     public static Resources resources;
 
-    public static CurrentGame currentGame;
+    public CurrentGame currentGame;
     private CurrentGame replay;
     public static String loadGame = null;
+    private List<String> listMoves;
     GridLayout grid = null;
 
     int place = 0;
@@ -64,7 +60,7 @@ public class ReplayCenter extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.replay);
 
-        Toast.makeText(getApplicationContext(), "Game selected: " + loadGame, Toast.LENGTH_LONG).show();
+        Toast.makeText(getApplicationContext(), "Game selected: " + loadGame, Toast.LENGTH_SHORT).show();
         AutoCompleteTextView t = (AutoCompleteTextView) findViewById(R.id.autoCompleteTextView);
         loadGame = loadGame.trim();
         t.setText(loadGame);
@@ -77,9 +73,10 @@ public class ReplayCenter extends AppCompatActivity
                 Toast.makeText(getApplicationContext(), "Couldn't load " + loadGame, Toast.LENGTH_LONG).show();
             }
             else {
-                Toast.makeText(getApplicationContext(), "Loaded " + loadGame, Toast.LENGTH_LONG).show();
-                replay = new CurrentGame();
+                Toast.makeText(getApplicationContext(), "Loaded " + loadGame, Toast.LENGTH_SHORT).show();
                 replay = currentGame;
+                listMoves = replay.listMoves;
+                currentGame = new CurrentGame();
                 //replay.currentBoard = new Board();
             }
             grid = (GridLayout) findViewById(R.id.chessBoard);
@@ -133,23 +130,28 @@ public class ReplayCenter extends AppCompatActivity
 
 
     public void makeMove(){
-        try{
-            replay.listMoves.get(place).substring(0,2);
-            replay.listMoves.get(place).substring(3,5);
-            firstSelectedTile = findTile(replay.listMoves.get(place).substring(0,2));
-            secondSelectedTile = findTile(replay.listMoves.get(place).substring(3,5));
-
-            secondSelectedTile.setImageResource((Integer)firstSelectedTile.getTag());
-            secondSelectedTile.setTag(firstSelectedTile.getTag());
-
-            firstSelectedTile.setImageResource(android.R.color.transparent);
-            firstSelectedTile.setTag(android.R.color.transparent);
-
-        }catch(Exception e){
-            Log.e("AppCompatActivity",Log.getStackTraceString(e));
+        if (currentGame.finished) {
+            Toast.makeText(getApplicationContext(), "Current Game is already finished", Toast.LENGTH_SHORT).show();
             return;
         }
-
+        try{
+            TypeOfMove madeMove = currentGame.makeMove(listMoves.get(place));
+            if(madeMove == TypeOfMove.VALID || madeMove == TypeOfMove.EN_PASSANT || madeMove == TypeOfMove.PROMOTION || madeMove == TypeOfMove.CASTLE_LEFT || madeMove == TypeOfMove.CASTLE_RIGHT){// redraw 2 files
+                redrawBoard();
+            }
+            else if (madeMove == TypeOfMove.INVALID) {
+                Toast.makeText(getApplicationContext(), "Illegal move", Toast.LENGTH_SHORT).show();
+            }
+            if (currentGame.currentBoard.whiteKing.checkmate() ) {
+                Toast.makeText(getApplicationContext(), "Checkmate! Black wins!", Toast.LENGTH_LONG).show();
+            }
+            if (currentGame.currentBoard.blackKing.checkmate()) {
+                Toast.makeText(getApplicationContext(), "Checkmate! White wins!", Toast.LENGTH_LONG).show();
+            }
+            //currentGame.writeGame("currentGame");
+        }catch(Exception e){
+            Toast.makeText(getApplicationContext(), "Saving Move Crashed", Toast.LENGTH_SHORT).show();
+        }
     }
 
     private ImageButton findTile(String tileID){
@@ -166,7 +168,7 @@ public class ReplayCenter extends AppCompatActivity
     }
 
 
-    public static void redrawBoard(){
+    public void redrawBoard(){
         for(int i = 0; i < currentBoardDisplay.getChildCount(); i++){
             ImageButton currentSquare = (ImageButton) currentBoardDisplay.getChildAt(i);
             String id = resources.getResourceEntryName(currentSquare.getId());
