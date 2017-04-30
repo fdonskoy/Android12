@@ -183,7 +183,10 @@ public class Pawn extends Piece {
 			try {
 				this.getPosition().setPiece(null);
 				if (CurrentGame.getInput() == null || CurrentGame.getInput().equals("Q")) {
-					this.getPosition().setPiece(new Queen(this.getPosition(), this.getColor(), king, this.board));
+                    Piece temp = this;
+                    king.team.remove(this);
+                    temp.getPosition().setPiece(new Queen(temp.getPosition(), temp.getColor(), king, temp.board));
+                    king.team.add(temp.getPosition().getPiece());
 				}else if (CurrentGame.getInput().equals("N")) {
 					this.getPosition().setPiece(new Knight(this.getPosition(), this.getColor(), king, this.board));
 				}
