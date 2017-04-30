@@ -65,7 +65,7 @@ public abstract class Piece implements Serializable {
 	 * @return true if this piece can legally move
 	*/
 	public abstract boolean canMove();
-	
+	public abstract Position getValidMove();
 	/**@param finish the new position the piece is to attempt to move to
 	 * @return true if move successful, false otherwise
 	*/

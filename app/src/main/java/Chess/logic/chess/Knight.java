@@ -232,7 +232,57 @@ public class Knight extends Piece {
 		}
 		return null;
 	}
-	
+
+	@Override
+	public Position getValidMove() {
+		Position pos = this.getPosition();
+		Position northEast = setNorthEast(pos);
+		Position northEast2 = setNorthEast2(pos);
+		Position southEast = setSouthEast(pos);
+		Position southEast2 = setSouthEast2(pos);
+
+		Position northWest = setNorthWest(pos);
+		Position northWest2 = setNorthWest2(pos);
+		Position southWest = setSouthWest(pos);
+		Position southWest2 = setSouthWest2(pos);
+
+		if (!overrideTestMove) {
+			testMove = true;
+		}
+
+		Position retval = null;
+
+		if(move(northEast) == TypeOfMove.VALID){
+			retval = northEast;
+		}
+		else if(move(northEast2) == TypeOfMove.VALID){
+			retval = northEast2;
+		}
+		else if(move(southEast) == TypeOfMove.VALID){
+			retval = southEast;
+		}
+		else if(move(southEast2) == TypeOfMove.VALID){
+			retval = southEast2;
+		}
+		else if(move(northWest) == TypeOfMove.VALID){
+			retval = northWest;
+		}
+		else if(move(northWest2) == TypeOfMove.VALID){
+			retval = northWest2;
+		}
+		else if(move(southWest) == TypeOfMove.VALID){
+			retval = southWest;
+		}
+		else if(move(southWest2) == TypeOfMove.VALID){
+			retval = southWest2;
+		}
+
+		testMove = false;
+
+		return retval;
+	}
+
+
 	/**
 	 * @author Timothy Elbert
 	 * return string wN for white Knight and bN for black Knight
