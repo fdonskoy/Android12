@@ -500,7 +500,7 @@ public class OppeartionCenter extends AppCompatActivity
             return true;
         }
         catch(Exception e){
-            Toast.makeText(getApplicationContext(), "Something Broke in checking for last game", Toast.LENGTH_SHORT).show();
+            //Toast.makeText(getApplicationContext(), "Something Broke in checking for last game", Toast.LENGTH_SHORT).show();
             return false;
         }
     }
