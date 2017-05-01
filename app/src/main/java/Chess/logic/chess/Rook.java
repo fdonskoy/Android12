@@ -77,7 +77,7 @@ public class Rook extends Piece implements Serializable{
 			}
 			if (testMove) {
 				board.undoMove(start, finish, taken);
-				return TypeOfMove.INVALID;
+				return TypeOfMove.VALID;
 			}
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
