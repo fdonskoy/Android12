@@ -47,7 +47,7 @@ import Chess.logic.chess.TypeOfMove;
 public class SavedGames extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
-    public static CurrentGame currentGame;
+    public CurrentGame currentGame;
     private List<String> myList = null;
     private String game = null;
 
@@ -62,7 +62,6 @@ public class SavedGames extends AppCompatActivity
         try {
             ListView lv = (ListView) findViewById(R.id.savedGames);
             List<String> your_array_list = savedGamesStringView();
-
             ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(
                     this,
                     android.R.layout.simple_list_item_1,
@@ -71,6 +70,7 @@ public class SavedGames extends AppCompatActivity
             lv.setAdapter(arrayAdapter);
         }
         catch (Exception e){
+            e.printStackTrace();
             Toast.makeText(getApplicationContext(), "Failed to load list", Toast.LENGTH_LONG).show();
         }
 
@@ -148,22 +148,26 @@ public class SavedGames extends AppCompatActivity
         return true;
     }
 
-    private List<String> savedGamesStringView() throws Exception{
+    private List<String> savedGamesStringView() {
         List<String> arrayListView = new ArrayList<String>();
+        try {
+            File[] listOfFiles = getFilesDir().listFiles();
+            for (File f: listOfFiles) {
+                if (!f.getName().equals("myfile") && !f.getName().equals("data.dat") && !f.getName().equals("Undo.dat")) {
+                    FileInputStream fi = new FileInputStream(f);
+                    ObjectInputStream oi = new ObjectInputStream(fi);
+                    currentGame = (CurrentGame)oi.readObject();
+                    oi.close();
+                    fi.close();
 
-        File[] listOfFiles = getFilesDir().listFiles();
-        for (File f: listOfFiles) {
-            if (!f.getName().equals("myfile") && !f.getName().equals("data.dat") && !f.getName().equals("Undo.dat")) {
-                FileInputStream fi = new FileInputStream(f);
-                ObjectInputStream oi = new ObjectInputStream(fi);
-                currentGame = (CurrentGame)oi.readObject();
-                oi.close();
-                fi.close();
+                    arrayListView.add(f.getName() + " | Date: " + currentGame.dateSaved);
+                    //arrayListView.add(f.getName());
+                }
 
-                arrayListView.add(f.getName() + " | Date: " + currentGame.dateSaved);
-                //arrayListView.add(f.getName());
             }
-
+        }
+        catch (Exception e){
+            e.printStackTrace();
         }
 
         return arrayListView;

@@ -3,6 +3,8 @@
 */
 package Chess.logic.chess;
 
+import java.io.Serializable;
+
 /**
  * used to identify piece color and square color
 */

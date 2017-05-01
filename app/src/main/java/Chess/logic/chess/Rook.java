@@ -4,10 +4,14 @@
 package Chess.logic.chess;
 
 
+import java.io.Serializable;
+
 /**
  * Rook piece on chess board identified as bR or wR for black Rook and white Rook, respectively
  */
-public class Rook extends Piece{
+public class Rook extends Piece implements Serializable{
+	private static final long serialVersionUID = 344424574567456781L;
+
 	/**keeps track if the piece has moved this game for castling purposes*/
 	public boolean hasMoved;
 	

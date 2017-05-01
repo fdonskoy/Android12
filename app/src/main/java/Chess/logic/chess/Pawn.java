@@ -3,10 +3,14 @@
  */
 package Chess.logic.chess;
 
+import java.io.Serializable;
+
 /**
  * Pawn piece on chess board identified as bP or wP for black Pawn and white Pawn, respectively
  */
-public class Pawn extends Piece {
+public class Pawn extends Piece implements Serializable{
+	private static final long serialVersionUID = 34442448888881L;
+
 	/**
 	 * @author Timothy Elbert
 	 * used when pawn is requested to move up two tiles and in en passant for move history

@@ -3,10 +3,14 @@
  */
 package Chess.logic.chess;
 
+import java.io.Serializable;
+
 /**
  * Knight piece on chess board identified as bN or wN for black Knight and white Knight, respectively
  */
-public class Knight extends Piece {
+public class Knight extends Piece implements Serializable {
+
+	private static final long serialVersionUID = 3444246666666661L;
 	/**
 	 * @author Timothy Elbert
 	 * @param position to initialize object on board

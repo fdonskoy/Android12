@@ -3,10 +3,14 @@
  */
 package Chess.logic.chess;
 
+import java.io.Serializable;
+
 /**
  * Queen piece on chess board identified as bQ or wQ for black Queen and white Queen, respectively
  */
-public class Queen extends Piece{
+public class Queen extends Piece implements Serializable{
+	private static final long serialVersionUID = 344472442342366L;
+
 	public Queen(Position position, Color color, King king, Board board) throws Exception {
 		super(position, color, king, board);
 		// TODO Auto-generated constructor stub
