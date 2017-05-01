@@ -135,6 +135,7 @@ public class OppeartionCenter extends AppCompatActivity
             CurrentGame temp = readCurrentGameFile("data.dat");
             TypeOfMove made = null;
             made = currentGame.makeAImove();
+            Toast.makeText(getApplicationContext(), "First ele " + currentGame.currentBoard.whiteKing.team.get(0) + " and black " + currentGame.currentBoard.blackKing.team.get(0), Toast.LENGTH_SHORT).show();
             if (made != TypeOfMove.INVALID && made != null) {
                 writeToUndo(temp);
                 Toast.makeText(getApplicationContext(), "Random move generated", Toast.LENGTH_SHORT).show();
@@ -342,9 +343,15 @@ public class OppeartionCenter extends AppCompatActivity
                 Toast.makeText(getApplicationContext(), "Checkmate! Black wins!", Toast.LENGTH_LONG).show();
                 saveGameTitleOrNah();
             }
-            if (currentGame.currentBoard.blackKing.checkmate()) {
+            else if (currentGame.currentBoard.blackKing.checkmate()) {
                 Toast.makeText(getApplicationContext(), "Checkmate! White wins!", Toast.LENGTH_LONG).show();
                 saveGameTitleOrNah();
+            }
+            else if (currentGame.currentBoard.whiteKing.inCheck() ) {
+                Toast.makeText(getApplicationContext(), "Check", Toast.LENGTH_LONG).show();
+            }
+            else if (currentGame.currentBoard.blackKing.inCheck()) {
+                Toast.makeText(getApplicationContext(), "Check", Toast.LENGTH_LONG).show();
             }
 
             Boolean t = writeIt("data.dat");

@@ -303,7 +303,8 @@ public class CurrentGame implements Serializable{
 					System.out.println(currentBoard);
 					piece.overrideTestMove = false;
 					listMoves.add("" + start.getFile() + start.getRank() + " " + piece.getPosition().getFile() + piece.getPosition().getRank());
-					return true;
+					//return true;
+					return TypeOfMove.VALID;
 				}*/
 			}
 		}
@@ -323,7 +324,8 @@ public class CurrentGame implements Serializable{
 					System.out.println(currentBoard);
 					piece.overrideTestMove = false;
 					listMoves.add("" + start.getFile() + start.getRank() + " " + piece.getPosition().getFile() + piece.getPosition().getRank());
-					return true;
+					//return true;
+					return TypeOfMove.VALID;
 				}*/
 
 			}
