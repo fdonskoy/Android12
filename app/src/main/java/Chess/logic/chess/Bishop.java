@@ -104,7 +104,7 @@ public class Bishop extends Piece{
 		if (!overrideTestMove) {
 			testMove = true;
 		}
-		boolean possibleMove = move(northEast) == TypeOfMove.VALID || move(northWest) == TypeOfMove.VALID || move(southEast)  == TypeOfMove.VALID || move(southWest) == TypeOfMove.VALID;
+		boolean possibleMove = move(northEast) != TypeOfMove.INVALID || move(northWest) != TypeOfMove.INVALID || move(southEast) != TypeOfMove.INVALID || move(southWest) != TypeOfMove.INVALID;
 		testMove = false;
 		return possibleMove;
 	}

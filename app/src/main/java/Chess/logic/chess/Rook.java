@@ -128,7 +128,6 @@ public class Rook extends Piece{
 			testMove = true;
 		}
 
-
 		Position retval = null;
 
 		if(move(north) != TypeOfMove.INVALID){

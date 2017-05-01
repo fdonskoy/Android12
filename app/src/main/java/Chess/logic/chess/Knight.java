@@ -71,28 +71,48 @@ public class Knight extends Piece {
 	@Override
 	public boolean canMove() {
 		Position pos = this.getPosition();
-		Position northEast = setNorthEast(pos);
-		Position northEast2 = setNorthEast2(pos);
-		Position southEast = setSouthEast(pos);
-		Position southEast2 = setSouthEast2(pos);
-		
-		Position northWest = setNorthWest(pos);
-		Position northWest2 = setNorthWest2(pos);
-		Position southWest = setSouthWest(pos);
-		Position southWest2 = setSouthWest2(pos);
+		Position northEast =  null;
+		Position northEast2 = null;
+		Position southEast = null;
+		Position southEast2 = null;
+
+		Position northWest = null;
+		Position northWest2 = null;
+		Position southWest = null;
+		Position southWest2 = null;
+
+		if(pos.getNorth() != null){
+			northEast = pos.getNorth().getNorthEast();
+			northWest = pos.getNorth().getNorthWest();
+		}
+
+		if(pos.getSouth() != null){
+			southEast = pos.getSouth().getSouthEast();
+			southWest = pos.getSouth().getSouthWest();
+		}
+
+		if(pos.getEast() != null){
+			northEast2 = pos.getEast().getSouthEast();
+			southEast2 = pos.getEast().getNorthEast();
+		}
+
+		if(pos.getWest() != null){
+			northWest2 = pos.getWest().getSouthWest();
+			southWest2 = pos.getWest().getNorthWest();
+		}
 
 		if (!overrideTestMove) {
 			testMove = true;
 		}
 		
-		boolean possibleMove = move(northEast) == TypeOfMove.VALID
-							|| move(northEast2) == TypeOfMove.VALID
-							|| move(southEast) == TypeOfMove.VALID
-							|| move(southEast2) == TypeOfMove.VALID
-							|| move(northWest) == TypeOfMove.VALID
-							|| move(northWest2) == TypeOfMove.VALID
-							|| move(southWest) == TypeOfMove.VALID
-							|| move(southWest2) == TypeOfMove.VALID;
+		boolean possibleMove = move(northEast) != TypeOfMove.INVALID
+							|| move(northEast2) != TypeOfMove.INVALID
+							|| move(southEast) != TypeOfMove.INVALID
+							|| move(southEast2) != TypeOfMove.INVALID
+							|| move(northWest) != TypeOfMove.INVALID
+							|| move(northWest2) != TypeOfMove.INVALID
+							|| move(southWest) != TypeOfMove.INVALID
+							|| move(southWest2) != TypeOfMove.INVALID;
 		testMove = false;
 		return possibleMove;
 	}
@@ -236,15 +256,35 @@ public class Knight extends Piece {
 	@Override
 	public Position getValidMove() {
 		Position pos = this.getPosition();
-		Position northEast = setNorthEast(pos);
-		Position northEast2 = setNorthEast2(pos);
-		Position southEast = setSouthEast(pos);
-		Position southEast2 = setSouthEast2(pos);
+		Position northEast =  null;
+		Position northEast2 = null;
+		Position southEast = null;
+		Position southEast2 = null;
 
-		Position northWest = setNorthWest(pos);
-		Position northWest2 = setNorthWest2(pos);
-		Position southWest = setSouthWest(pos);
-		Position southWest2 = setSouthWest2(pos);
+		Position northWest = null;
+		Position northWest2 = null;
+		Position southWest = null;
+		Position southWest2 = null;
+
+		if(pos.getNorth() != null){
+			northEast = pos.getNorth().getNorthEast();
+			northWest = pos.getNorth().getNorthWest();
+		}
+
+		if(pos.getSouth() != null){
+			southEast = pos.getSouth().getSouthEast();
+			southWest = pos.getSouth().getSouthWest();
+		}
+
+		if(pos.getEast() != null){
+			northEast2 = pos.getEast().getSouthEast();
+			southEast2 = pos.getEast().getNorthEast();
+		}
+
+		if(pos.getWest() != null){
+			northWest2 = pos.getWest().getSouthWest();
+			southWest2 = pos.getWest().getNorthWest();
+		}
 
 		if (!overrideTestMove) {
 			testMove = true;
@@ -252,28 +292,28 @@ public class Knight extends Piece {
 
 		Position retval = null;
 
-		if(move(northEast) == TypeOfMove.VALID){
+		if(move(northEast) != TypeOfMove.INVALID){
 			retval = northEast;
 		}
-		else if(move(northEast2) == TypeOfMove.VALID){
+		else if(move(northEast2) != TypeOfMove.INVALID){
 			retval = northEast2;
 		}
-		else if(move(southEast) == TypeOfMove.VALID){
+		else if(move(southEast) != TypeOfMove.INVALID){
 			retval = southEast;
 		}
-		else if(move(southEast2) == TypeOfMove.VALID){
+		else if(move(southEast2) != TypeOfMove.INVALID){
 			retval = southEast2;
 		}
-		else if(move(northWest) == TypeOfMove.VALID){
+		else if(move(northWest) != TypeOfMove.INVALID){
 			retval = northWest;
 		}
-		else if(move(northWest2) == TypeOfMove.VALID){
+		else if(move(northWest2) != TypeOfMove.INVALID){
 			retval = northWest2;
 		}
-		else if(move(southWest) == TypeOfMove.VALID){
+		else if(move(southWest) != TypeOfMove.INVALID){
 			retval = southWest;
 		}
-		else if(move(southWest2) == TypeOfMove.VALID){
+		else if(move(southWest2) != TypeOfMove.INVALID){
 			retval = southWest2;
 		}
 
