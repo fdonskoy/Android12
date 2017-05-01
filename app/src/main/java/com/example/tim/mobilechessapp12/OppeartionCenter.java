@@ -131,7 +131,7 @@ public class OppeartionCenter extends AppCompatActivity
             CurrentGame temp = readCurrentGameFile("data.dat");
             TypeOfMove made = null;
             made = currentGame.makeAImove();
-            Toast.makeText(getApplicationContext(), "First ele " + currentGame.currentBoard.whiteKing.team.get(0) + " and black " + currentGame.currentBoard.blackKing.team.get(0), Toast.LENGTH_SHORT).show();
+            //Toast.makeText(getApplicationContext(), "First ele " + currentGame.currentBoard.whiteKing.team.get(0) + " and black " + currentGame.currentBoard.blackKing.team.get(0), Toast.LENGTH_SHORT).show();
             if (made != TypeOfMove.INVALID && made != null) {
                 writeToUndo(temp);
                 Toast.makeText(getApplicationContext(), "Random move generated", Toast.LENGTH_SHORT).show();
