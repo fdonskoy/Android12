@@ -132,13 +132,23 @@ public class OppeartionCenter extends AppCompatActivity
             }
 
             CurrentGame temp = readCurrentGameFile("data.dat");
-            Boolean made = false;
+            TypeOfMove made = null;
             made = currentGame.makeAImove();
-            if (made) {
+            if (made != TypeOfMove.INVALID && made != null) {
                 writeToUndo(temp);
                 Toast.makeText(getApplicationContext(), "Random move generated", Toast.LENGTH_SHORT).show();
                 redrawBoard();
                 writeIt("data.dat");
+
+                if (currentGame.currentBoard.whiteKing.checkmate() ) {
+                    Toast.makeText(getApplicationContext(), "Checkmate! Black wins!", Toast.LENGTH_LONG).show();
+                    saveGameTitleOrNah();
+                }
+
+                if (currentGame.currentBoard.blackKing.checkmate()) {
+                    Toast.makeText(getApplicationContext(), "Checkmate! White wins!", Toast.LENGTH_LONG).show();
+                    saveGameTitleOrNah();
+                }
             } else{
                 Toast.makeText(getApplicationContext(), "Can't generate random move generated", Toast.LENGTH_SHORT).show();
             }

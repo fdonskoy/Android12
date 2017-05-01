@@ -283,7 +283,8 @@ public class CurrentGame implements Serializable{
 		gameOver();
 	}
 
-	public boolean makeAImove() throws Exception {
+	public TypeOfMove makeAImove() throws Exception {
+		TypeOfMove retval = null;
 		Position start = null;
 		Position finish = null;
 		if (currentBoard.turn == Color.White) {
@@ -292,11 +293,11 @@ public class CurrentGame implements Serializable{
 				start = piece.getPosition();
 				finish = piece.getValidMove();
 				if (finish != null) {
-					makeMove("" + start.getFile() + start.getRank() + " " + finish.getFile() + finish.getRank());
+					retval = makeMove("" + start.getFile() + start.getRank() + " " + finish.getFile() + finish.getRank());
 					System.out.println(currentBoard);
 					piece.overrideTestMove = false;
 					listMoves.add("" + start.getFile() + start.getRank() + " " + piece.getPosition().getFile() + piece.getPosition().getRank());
-					return true;
+					return retval;
 				}
 				/*if (piece.makeMove()) {
 					System.out.println(currentBoard);
@@ -312,11 +313,11 @@ public class CurrentGame implements Serializable{
 				start = piece.getPosition();
 				finish = piece.getValidMove();
 				if (finish != null) {
-					makeMove("" + start.getFile() + start.getRank() + " " + finish.getFile() + finish.getRank());
+					retval = makeMove("" + start.getFile() + start.getRank() + " " + finish.getFile() + finish.getRank());
 					System.out.println(currentBoard);
 					piece.overrideTestMove = false;
 					listMoves.add("" + start.getFile() + start.getRank() + " " + piece.getPosition().getFile() + piece.getPosition().getRank());
-					return true;
+					return retval;
 				}
 				/*if (piece.makeMove()) {
 					System.out.println(currentBoard);
@@ -327,7 +328,7 @@ public class CurrentGame implements Serializable{
 
 			}
 		}
-		return false;
+		return retval;
 	}
 
 
