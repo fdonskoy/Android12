@@ -3,10 +3,13 @@
  */
 package Chess.logic.chess;
 
+import java.io.Serializable;
+
 /**
  * Bishop piece on chess board identified as bB or wB for black Bishop and white Bishop, respectively
  */
-public class Bishop extends Piece{
+public class Bishop extends Piece implements Serializable {
+	private static final long serialVersionUID = 3444244444444441L;
 	/**
 	 * @author Timothy Elbert
 	 * @param position to initialize object on board

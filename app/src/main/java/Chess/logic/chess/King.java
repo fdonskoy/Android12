@@ -3,12 +3,15 @@
  */
 package Chess.logic.chess;
 
+import java.io.Serializable;
 import java.util.LinkedList;
 
 /**
  * King piece on chess board identified as bK or wK for black King and white King, respectively
  */
-public class King extends Piece{
+public class King extends Piece implements Serializable{
+	private static final long serialVersionUID = 3444244555555551L;
+
 	/**keeps track if the piece has moved this game for castling purposes*/
 	private boolean hasMoved;
 	/**lists all the pieces on the king's team currently active on the field*/
