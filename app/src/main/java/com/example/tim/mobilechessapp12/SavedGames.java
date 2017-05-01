@@ -119,8 +119,6 @@ public class SavedGames extends AppCompatActivity
         } else if (id == R.id.old_game_btn) {
             Log.d("My APP", "old games");
             try {
-
-                Toast.makeText(getApplicationContext(), "Clicked Nav item", Toast.LENGTH_LONG).show();
                 setContentView(R.layout.load_old_games);
 
                 ListView lv = (ListView) findViewById(R.id.savedGames);

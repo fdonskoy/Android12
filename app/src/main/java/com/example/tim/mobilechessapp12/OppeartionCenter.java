@@ -123,8 +123,6 @@ public class OppeartionCenter extends AppCompatActivity
     }
 
     public void randomMove(View v) {
-        Toast.makeText(getApplicationContext(), "Black " + currentGame.currentBoard.blackKing.team, Toast.LENGTH_SHORT).show();
-        Toast.makeText(getApplicationContext(), "White " + currentGame.currentBoard.whiteKing.team, Toast.LENGTH_SHORT).show();
         try {
             if (currentGame.finished) {
                 return;
