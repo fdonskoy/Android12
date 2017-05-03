@@ -174,7 +174,7 @@ public class Position implements Serializable{
 		for(Position cur = getEast(); cur != null; cur = cur.getEast()){
 			if(cur.getPiece() != null && cur.getPiece().getColor() != homeTeamColor && 
 					(  cur.getPiece().getClass() == Rook.class 
-					|| cur.getPiece().getClass() == Queen.class 
+					|| cur.getPiece().getClass() == Queen.class
 					|| (adjacentPosition && cur.getPiece().getClass() == King.class))){
 				retval.add(cur.getPiece());
 				break;
@@ -236,7 +236,8 @@ public class Position implements Serializable{
 		for(Position cur = getNorthEast(); cur != null; cur = cur.getNorthEast()){
 			if(cur.getPiece() != null && cur.getPiece().getColor() != homeTeamColor && 
 					(  cur.getPiece().getClass() == Bishop.class 
-					|| cur.getPiece().getClass() == Queen.class 
+					|| cur.getPiece().getClass() == Queen.class
+					|| (cur.getPiece().getClass() == King.class && adjacentPosition)
 					|| (adjacentPosition && 
 							(cur.getPiece().getClass() == King.class
 						|| (	homeTeamColor == Color.White 
@@ -255,7 +256,7 @@ public class Position implements Serializable{
 			if(cur.getPiece() != null && cur.getPiece().getColor() != homeTeamColor && 
 					(  cur.getPiece().getClass() == Bishop.class 
 					|| cur.getPiece().getClass() == Queen.class 
-					|| cur.getPiece().getClass() == King.class
+					|| (cur.getPiece().getClass() == King.class && adjacentPosition)
 					|| (adjacentPosition && 
 							(cur.getPiece().getClass() == King.class
 						|| (	homeTeamColor == Color.White 
@@ -274,7 +275,7 @@ public class Position implements Serializable{
 			if(cur.getPiece() != null && cur.getPiece().getColor() != homeTeamColor && 
 					(  cur.getPiece().getClass() == Bishop.class 
 					|| cur.getPiece().getClass() == Queen.class 
-					|| cur.getPiece().getClass() == King.class
+					|| (cur.getPiece().getClass() == King.class && adjacentPosition)
 					|| (adjacentPosition && 
 						(	cur.getPiece().getClass() == King.class
 						|| 	(	homeTeamColor == Color.Black 
@@ -293,7 +294,7 @@ public class Position implements Serializable{
 			if(cur.getPiece() != null && cur.getPiece().getColor() != homeTeamColor && 
 					(  cur.getPiece().getClass() == Bishop.class 
 					|| cur.getPiece().getClass() == Queen.class 
-					|| cur.getPiece().getClass() == King.class
+					|| (cur.getPiece().getClass() == King.class && adjacentPosition)
 					|| (adjacentPosition && 
 							(cur.getPiece().getClass() == King.class
 						|| (	homeTeamColor == Color.Black 
