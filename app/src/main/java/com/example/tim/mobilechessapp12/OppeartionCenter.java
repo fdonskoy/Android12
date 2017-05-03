@@ -86,6 +86,7 @@ public class OppeartionCenter extends AppCompatActivity
             if (!readIt("data.dat")) {
                 Toast.makeText(getApplicationContext(), "No current active game found", Toast.LENGTH_SHORT).show();
                 currentGame = new CurrentGame();
+                writeIt("Undo.dat");
             }
             else {
                 //it goes on to initialize the board from scratch anyway after the getresources line
