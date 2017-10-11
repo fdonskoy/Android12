@@ -10,7 +10,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".OppeartionCenter"
+            android:name=".OperationCenter"
             android:label="Chess12"
             android:theme="@style/AppTheme.NoActionBar">
 
