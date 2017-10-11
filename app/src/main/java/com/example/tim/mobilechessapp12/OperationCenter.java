@@ -3,8 +3,6 @@ package com.example.tim.mobilechessapp12;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
 import android.text.InputType;
 import android.view.View;
@@ -16,15 +14,10 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.util.Log;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.GridLayout;
 import android.widget.ImageButton;
 import android.content.res.Resources;
-import android.widget.ListView;
 import android.widget.Toast;
 import android.graphics.drawable.Drawable;
 import android.support.v4.content.res.ResourcesCompat;
@@ -36,16 +29,14 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
 
 import Chess.logic.chess.Color;
 import Chess.logic.chess.CurrentGame;
 import Chess.logic.chess.TypeOfMove;
 
-public class OppeartionCenter extends AppCompatActivity
+public class OperationCenter extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
     public static String firstSelected = null;
@@ -214,12 +205,6 @@ public class OppeartionCenter extends AppCompatActivity
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        /*if (id == R.id.action_settings) {
-            return true;
-        }*/
-
         return super.onOptionsItemSelected(item);
     }
 
@@ -238,19 +223,14 @@ public class OppeartionCenter extends AppCompatActivity
         } else if (id == R.id.old_game_btn) {
             try {
                 writeIt("data.dat");
-
                 Intent intent = new Intent(this, SavedGames.class);
                 startActivity(intent);
-
             }
             catch (Exception e) {
                 return false;
             }
 
         }
-
-        //DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        //drawer.closeDrawer(GravityCompat.START);
         return true;
     }
 
@@ -264,44 +244,44 @@ public class OppeartionCenter extends AppCompatActivity
             ImageButton currentSquare = (ImageButton) board.getChildAt(i);
             currentSquare.setOnClickListener(new View.OnClickListener()   {
                 public void onClick(View v) {
-                    if (OppeartionCenter.firstSelected == null) {
-                        OppeartionCenter.firstSelectedTile = (ImageButton) v;
-                        OppeartionCenter.firstSelected = getResources().getResourceEntryName(v.getId());
+                    if (OperationCenter.firstSelected == null) {
+                        OperationCenter.firstSelectedTile = (ImageButton) v;
+                        OperationCenter.firstSelected = getResources().getResourceEntryName(v.getId());
 
-                        OppeartionCenter.firstSelectedColor = OppeartionCenter.firstSelectedTile.getBackground();
-                        OppeartionCenter.firstSelectedTile.setBackground(ResourcesCompat.getDrawable(getResources(), R.drawable.bluish, null));
-                    } else if (OppeartionCenter.firstSelected != null) {
-                        OppeartionCenter.secondSelectedTile = (ImageButton) v;
-                        OppeartionCenter.secondSelected = getResources().getResourceEntryName(v.getId());
+                        OperationCenter.firstSelectedColor = OperationCenter.firstSelectedTile.getBackground();
+                        OperationCenter.firstSelectedTile.setBackground(ResourcesCompat.getDrawable(getResources(), R.drawable.bluish, null));
+                    } else if (OperationCenter.firstSelected != null) {
+                        OperationCenter.secondSelectedTile = (ImageButton) v;
+                        OperationCenter.secondSelected = getResources().getResourceEntryName(v.getId());
 
-                        OppeartionCenter.secondSelectedColor = OppeartionCenter.secondSelectedTile.getBackground();
-                        OppeartionCenter.secondSelectedTile.setBackground(ResourcesCompat.getDrawable(getResources(), R.drawable.bluish, null));
+                        OperationCenter.secondSelectedColor = OperationCenter.secondSelectedTile.getBackground();
+                        OperationCenter.secondSelectedTile.setBackground(ResourcesCompat.getDrawable(getResources(), R.drawable.bluish, null));
 
                         if (firstSelectedTile.equals(secondSelectedTile)) {
-                            OppeartionCenter.firstSelectedTile.setBackground(OppeartionCenter.firstSelectedColor);
-                            OppeartionCenter.firstSelectedTile = null;
-                            OppeartionCenter.secondSelectedTile = null;
-                            OppeartionCenter.firstSelected = null;
-                            OppeartionCenter.secondSelected = null;
+                            OperationCenter.firstSelectedTile.setBackground(OperationCenter.firstSelectedColor);
+                            OperationCenter.firstSelectedTile = null;
+                            OperationCenter.secondSelectedTile = null;
+                            OperationCenter.firstSelected = null;
+                            OperationCenter.secondSelected = null;
 
                             return;
                         }
                         makeMove();
 
-                        OppeartionCenter.firstSelectedTile.setBackground(OppeartionCenter.firstSelectedColor);
-                        OppeartionCenter.secondSelectedTile.setBackground(OppeartionCenter.secondSelectedColor);
+                        OperationCenter.firstSelectedTile.setBackground(OperationCenter.firstSelectedColor);
+                        OperationCenter.secondSelectedTile.setBackground(OperationCenter.secondSelectedColor);
 
-                        OppeartionCenter.firstSelectedTile = null;
-                        OppeartionCenter.secondSelectedTile = null;
-                        OppeartionCenter.firstSelected = null;
-                        OppeartionCenter.secondSelected = null;
-                        OppeartionCenter.firstSelectedColor = null;
-                        OppeartionCenter.secondSelectedColor = null;
+                        OperationCenter.firstSelectedTile = null;
+                        OperationCenter.secondSelectedTile = null;
+                        OperationCenter.firstSelected = null;
+                        OperationCenter.secondSelected = null;
+                        OperationCenter.firstSelectedColor = null;
+                        OperationCenter.secondSelectedColor = null;
                     } else if (firstSelected.equals(getResources().getResourceEntryName(v.getId()))) {
-                        OppeartionCenter.firstSelectedTile = null;
-                        OppeartionCenter.secondSelectedTile = null;
-                        OppeartionCenter.firstSelected = null;
-                        OppeartionCenter.secondSelected = null;
+                        OperationCenter.firstSelectedTile = null;
+                        OperationCenter.secondSelectedTile = null;
+                        OperationCenter.firstSelected = null;
+                        OperationCenter.secondSelected = null;
                     }
                 }
             });
